@@ -1,0 +1,18 @@
+# Virtual environments
+venv/
+st_zoo*/
+.venv/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# macOS
+.DS_Store
+
+# STM / ML outputs
+**/experiments_outputs/
+**/mlruns/
+logs/
+saved_models/
