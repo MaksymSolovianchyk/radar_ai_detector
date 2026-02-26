@@ -16,3 +16,4 @@ __pycache__/
 **/mlruns/
 logs/
 saved_models/
+.DS_Store
