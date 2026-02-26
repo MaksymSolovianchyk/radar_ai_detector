@@ -1,0 +1,39 @@
+operation_mode: prediction
+
+general:
+  workers: 4 
+  no_prefetcher: true
+  display_figures: False 
+
+model: 
+  framework: 'torch'
+  model_name: 'mobilenetv2_w035_pt' 
+  pretrained: True
+  pretrained_dataset: "imagenet"
+  input_shape: [3, 224, 224]
+
+dataset:
+  dataset_name: "imagenet" # options "flowers102", "food101", "imagenet"
+  class_names: ''
+  classes_file_path: ./datasets/deployment_labels_imagenet.txt
+  #data_dir: "/local/datasets/" # there shud be imagenet folder inside this directory # can also be used for quantization
+  num_classes: 1000 # change according to your dataset
+  # train_split: "train"
+  # val_split: "validation"
+  prediction_path: "/local/datasets/ic_imagenet_2012/val/n01440764/"
+
+preprocessing: 
+  rescaling:
+    scale: 1/255.0 # TODO scale node is already present under data_augmentation
+    offset: 0
+  resizing:
+    interpolation: nearest # nearest 'Image resize interpolation type (overrides model)'
+    aspect_ratio: fit
+  color_mode: rgb
+
+mlflow:
+  uri: ./pt/src/experiments_outputs/mlruns
+
+hydra:
+  run:
+    dir: ./pt/src/experiments_outputs/${now:%Y_%m_%d_%H_%M_%S}

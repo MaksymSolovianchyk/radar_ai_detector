@@ -1,0 +1,12 @@
+dataset:
+  dataset_name: wider_face
+  training_path: /local/data/od_wider_face
+  validation_path: 
+  test_path: 
+settings:
+  max_detections: 710
+  exclude_unlabeled_images: True # If set to False, images without ground truths will be included in the dataset.
+  
+hydra:
+  run:
+    dir: outputs/${now:%Y_%m_%d_%H_%M_%S}

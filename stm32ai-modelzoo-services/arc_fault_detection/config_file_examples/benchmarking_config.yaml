@@ -1,0 +1,34 @@
+general:
+  project_name: afd
+  logs_dir: logs
+  saved_models_dir: saved_models
+  display_figures: True
+  global_seed: 123
+  gpu_memory_limit: 4
+  deterministic_ops: True
+
+model:
+  model_path: ../../stm32ai-modelzoo/arc_fault_detection/st_conv/ST_pretrainedmodel_custom_dataset/afd_test_bench_dataset/st_conv_freq_4channels_512/st_conv_freq_4channels_512.keras
+  model_name: 
+  input_shape: (4,512,1)
+
+operation_mode: benchmarking
+#choices=['benchmarking', 'evaluation', 'training', 'quantization', 'prediction',
+#        'chain_tb','chain_tbqeb','chain_tqe','chain_eqe','chain_qb','chain_eqeb']
+
+tools:
+   stedgeai:
+      optimization: balanced
+      on_cloud: True
+      path_to_stedgeai: C:/ST/STEdgeAI/<x.y>/Utilities/windows/stedgeai.exe
+   path_to_cubeIDE: C:/ST/STM32CubeIDE_1.17.0/STM32CubeIDE/stm32cubeide.exe
+
+benchmarking:
+  board: B-U585I-IOT02A
+
+mlflow:
+  uri: ./tf/src/experiments_outputs/mlruns
+
+hydra:
+  run:
+    dir: ./tf/src/experiments_outputs/${now:%Y_%m_%d_%H_%M_%S}

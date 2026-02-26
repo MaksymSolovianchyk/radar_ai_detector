@@ -1,0 +1,33 @@
+model:
+   model_path: ../../stm32ai-modelzoo/image_classification/mobilenetv1/ST_pretrainedmodel_public_dataset/tf_flowers/mobilenetv1_a025_96_grayscale_tfs/mobilenetv1_a025_96_grayscale_tfs.keras
+
+operation_mode: chain_eqe
+
+dataset:
+  dataset_name: tf_flowers
+  class_names: [daisy, dandelion, roses, sunflowers, tulips]
+  test_path: ./datasets/flower_photos_testset
+  quantization_path: ./datasets/flower_photos
+
+preprocessing:
+  rescaling:
+    scale: 1/127.5
+    offset: -1
+  resizing:
+    interpolation: nearest
+    aspect_ratio: fit
+  color_mode: grayscale
+
+quantization:
+   quantizer: TFlite_converter
+   quantization_type: PTQ
+   quantization_input_type: uint8
+   quantization_output_type: float
+   export_dir: quantized_models
+
+mlflow:
+   uri: ./tf/src/experiments_outputs/mlruns
+
+hydra:
+   run:
+      dir: ./tf/src/experiments_outputs/${now:%Y_%m_%d_%H_%M_%S}

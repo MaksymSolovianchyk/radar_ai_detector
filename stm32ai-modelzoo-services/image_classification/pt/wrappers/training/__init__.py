@@ -1,0 +1,1 @@
+from .ic_trainer import * # so that trainer can be registered

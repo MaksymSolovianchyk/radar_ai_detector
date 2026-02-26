@@ -1,0 +1,44 @@
+general:
+  project_name: afd
+  logs_dir: logs
+  saved_models_dir: saved_models
+  display_figures: True
+  global_seed: 123
+  gpu_memory_limit: 4
+  deterministic_ops: True
+
+model:
+  model_path: ../../stm32ai-modelzoo/arc_fault_detection/st_conv/ST_pretrainedmodel_custom_dataset/afd_test_bench_dataset/st_conv_freq_4channels_512/st_conv_freq_4channels_512_int8.tflite
+  model_name:
+  input_shape: (4,512,1)   # (n_channels, seq_len, 1)  
+
+operation_mode: prediction
+#choices=['benchmarking', 'evaluation', 'training', 'quantization', 'prediction',
+#        'chain_tb','chain_tbqeb','chain_tqe','chain_eqe','chain_qb','chain_eqeb']
+
+dataset:
+  dataset_name: afd_test_bench  # AFD dataset name
+  class_names: [normal,arc]
+  training_path: ./datasets/afd_test_bench/Arc_and_Normal_train.csv
+  validation_path: 
+  test_path: 
+  quantization_path: 
+  prediction_path: ./datasets/afd_test_bench/20Arc_20Normal_predict.csv
+  test_split:
+  validation_split: 
+  quantization_split:
+  to_cache: True  # Optional, use it to cache the dataset in memory for faster access
+  seed: 123
+
+preprocessing:
+  downsampling: True
+  normalization: True
+  time_domain: False
+
+
+mlflow:
+  uri: ./tf/src/experiments_outputs/mlruns
+
+hydra:
+  run:
+    dir: ./tf/src/experiments_outputs/${now:%Y_%m_%d_%H_%M_%S}

@@ -1,0 +1,26 @@
+general:
+  project_name: human_activity_recognition
+  gpu_memory_limit: 24
+
+operation_mode: evaluation
+
+dataset:
+  dataset_name: wisdm  # wisdm or mobility_v1
+  class_names: [Jogging,Stationary,Stairs,Walking]  # [Stationary,Walking,Jogging,Biking] for mobility_v1
+  training_path: ./datasets/WISDM_ar_v1.1/WISDM_ar_v1.1_raw.txt # need paths to train.pkl for mobility_v1
+  validation_split: 0.2
+  test_path: # need paths to test.pkl for mobility_v1
+  test_split: 0.25
+
+model:
+  model_path: ../../stm32ai-modelzoo/human_activity_recognition/st_ign/ST_pretrainedmodel_public_dataset/WISDM/st_ign_wl_24/st_ign_wl_24.keras # mandatory
+
+preprocessing: # mandatory
+  gravity_rot_sup: true  # mandatory
+  normalization: false # mandatory
+mlflow:
+  uri: ./tf/src/experiments_outputs/mlruns
+
+hydra:
+  run:
+    dir: ./tf/src/experiments_outputs/${now:%Y_%m_%d_%H_%M_%S}

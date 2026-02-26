@@ -1,0 +1,28 @@
+model:
+  model_type: deeplab
+  model_path: ../../stm32ai-modelzoo/semantic_segmentation/deeplabv3/ST_pretrainedmodel_public_dataset/person_coco_2017_pascal_voc_2012/st_deeplabv3_mnv2_a050_s16_asppv2_416/st_deeplabv3_mnv2_a050_s16_asppv2_416.keras
+
+operation_mode: evaluation
+
+dataset:
+   dataset_name: person_coco_2017_pascal_voc_2012
+   class_names: ["background", "person"]
+   test_path: ./datasets/person_COCO2017_VOC2012/JPEGImages
+   test_masks_path: ./datasets/person_COCO2017_VOC2012/SegmentationClassAug
+   test_files_path: ./datasets/person_COCO2017_VOC2012/ImageSets/Segmentation/val.txt
+
+preprocessing:
+   rescaling:
+      scale: 1/127.5
+      offset: -1
+   resizing:
+      interpolation: bilinear
+      aspect_ratio: fit
+   color_mode: rgb
+
+mlflow:
+   uri: ./tf/src/experiments_outputs/mlruns
+
+hydra:
+   run:
+      dir: ./tf/src/experiments_outputs/${now:%Y_%m_%d_%H_%M_%S}

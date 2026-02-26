@@ -1,0 +1,53 @@
+operation_mode: evaluation
+
+general:
+  workers: 4 
+  no_prefetcher: true
+  display_figures: False 
+
+model: 
+  framework: 'torch'
+  model_name: 'mobilenetv2_w035_pt' 
+  pretrained: True
+  pretrained_dataset: "imagenet"
+  input_shape: [3, 224, 224]
+
+dataset:
+  dataset_name: "imagenet" # options "flowers102", "food101", "imagenet"
+  class_names: ''
+  classes_file_path: ./datasets/deployment_labels_imagenet.txt
+  data_dir: "/local/datasets/" # there shud be imagenet folder inside this directory # can also be used for quantization
+  num_classes: 1000 # change according to your dataset
+  #train_split: "train" # valid for imagenet only and its optional
+  #val_split: "validation" # valid for imagenet only and its optional
+  test_path: "/local/datasets/ic_imagenet_2012/val" #if provided then it will be used for evaluation
+   
+preprocessing: 
+  rescaling:
+    scale: 1/255.0 # TODO scale node is already present under data_augmentation
+    offset: 0
+  resizing:
+    interpolation: nearest # nearest 'Image resize interpolation type (overrides model)'
+    aspect_ratio: fit
+  color_mode: rgb
+  mean: [0.485, 0.456, 0.406] # 'Override mean pixel value of dataset'
+  std: [0.229, 0.224, 0.225] # 'Override std deviation of dataset'
+
+evaluation:
+   profile: profile_O3
+   input_type: uint8     # int8 / uint8 / float32
+   output_type: int8     # int8 / uint8 / float32
+   input_chpos: chlast   # chlast / chfirst
+   output_chpos: chlast  # chlast / chfirst
+   target: stedgeai_n6 # host, stedgeai_host, stedgeai_n6
+
+tools:
+   stedgeai:
+      path_to_stedgeai: C:/ST/STEdgeAI/3.0/Utilities/windows/stedgeai.exe
+      
+mlflow:
+  uri: ./pt/src/experiments_outputs/mlruns
+
+hydra:
+  run:
+    dir: ./pt/src/experiments_outputs/${now:%Y_%m_%d_%H_%M_%S}

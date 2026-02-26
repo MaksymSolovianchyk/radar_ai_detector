@@ -1,0 +1,24 @@
+general:
+  project_name: coco_instance_seg
+
+operation_mode: benchmarking
+
+model:
+  model_path: https://github.com/stm32-hotspot/ultralytics/raw/refs/heads/main/examples/YOLOv8-STEdgeAI/stedgeai_models/segmentation/yolov8n_256_quant_pc_ii_seg_coco-st.tflite
+  model_type: yolov8n_seg
+tools:
+  stedgeai:
+    optimization: balanced
+    on_cloud: true
+    path_to_stedgeai: C:/ST/STEdgeAI/<x.y>/Utilities/windows/stedgeai.exe
+  path_to_cubeIDE: C:/ST/STM32CubeIDE_<*.*.*>/STM32CubeIDE/stm32cubeide.exe
+
+benchmarking:
+  board: STM32MP257F-EV1
+
+mlflow:
+  uri: ./tf/src/experiments_outputs/mlruns
+
+hydra:
+   run:
+      dir: ./tf/src/experiments_outputs/${now:%Y_%m_%d_%H_%M_%S}

@@ -1,0 +1,294 @@
+ST Edge AI Core v3.1.0-20311 2a284c16e
+Created date          : 2025-09-02 16:01:15
+Parameters            : generate -m cnn_model_fft_ss7_quantized.tflite --target stm32u3 --c-api st-ai -O time
+
+Exec/report summary (generate)
+------------------------------------------------------------------------------------------------------------------------------------------
+model file         :   C:\ST\CurrentDev\STM32U3-2M-GettingStarted-AudioSensing_har\Utils\Deploy\sHAR\cnn_model_fft_ss7_quantized.tflite   
+type               :   tflite                                                                                                             
+c_name             :   network                                                                                                            
+compression        :   lossless                                                                                                           
+options            :   allocate-inputs, allocate-outputs, use-lite-runtime, use-st-ai                                                     
+optimization       :   time                                                                                                               
+target/series      :   stm32u3                                                                                                            
+workspace dir      :   C:\ST\CurrentDev\STM32U3-2M-GettingStarted-AudioSensing_har\Utils\Deploy\sHAR\st_ai_ws                             
+output dir         :   C:\ST\CurrentDev\STM32U3-2M-GettingStarted-AudioSensing_har\Utils\Deploy\sHAR\st_ai_output                         
+model_fmt          :   sa/sa per tensor                                                                                                   
+model_name         :   cnn_model_fft_ss7_quantized                                                                                        
+model_hash         :   0x2b3e13d7642bf5a8ed53b46ddcce5f06                                                                                 
+params #           :   193,543 items (189.96 KiB)                                                                                         
+------------------------------------------------------------------------------------------------------------------------------------------
+input 1/1          :   'serving_default_input_10', f32(1x3x32), 384 Bytes, activations                                                    
+output 1/1         :   'conversion_18', f32(1x7), 28 Bytes, activations                                                                   
+macc               :   2,418,798                                                                                                          
+weights (ro)       :   194,524 B (189.96 KiB) (1 segment) / -579,648(-74.9%) vs float model                                               
+activations (rw)   :   16,768 B (16.38 KiB) (1 segment) *                                                                                 
+ram (total)        :   16,768 B (16.38 KiB) = 16,768 + 0 + 0                                                                              
+------------------------------------------------------------------------------------------------------------------------------------------
+(*) 'input'/'output' buffers are allocated in the activations buffer
+
+Model name - cnn_model_fft_ss7_quantized
+------ ------------------------------------------------ ---------------------- ----------------- ----------- -------------------------------- --- --------------- ------------------ -------------------- 
+m_id   layer (type,original)                            oshape                 param/size               macc                     connected to   | c_size          c_macc             c_type               
+------ ------------------------------------------------ ---------------------- ----------------- ----------- -------------------------------- --- --------------- ------------------ -------------------- 
+0      serving_default_input_10 (Input, )               [b:1,h:3,c:32]                                                                          |                 +192(+100.0%)      Conversion_[0]       
+       conversion_0 (Conversion, QUANTIZE)              [b:1,h:3,c:32]                                   192         serving_default_input_10   |                 -192(-100.0%)      
+------ ------------------------------------------------ ---------------------- ----------------- ----------- -------------------------------- --- --------------- ------------------ -------------------- 
+1      transpose_1 (Transpose, TRANSPOSE)               [b:1,h:32,c:3]                                    48                     conversion_0   |                                    Transpose_[1]        
+------ ------------------------------------------------ ---------------------- ----------------- ----------- -------------------------------- --- --------------- ------------------ -------------------- 
+2      reshape_2 (Reshape, EXPAND_DIMS)                 [b:1,h:1,w:32,c:3]                                                        transpose_1   |                                    
+------ ------------------------------------------------ ---------------------- ----------------- ----------- -------------------------------- --- --------------- ------------------ -------------------- 
+3      conv2d_3 (Conv2D, CONV_2D)                       [b:1,h:1,w:23,c:128]   3,968/4,352            88,448                        reshape_2   |                                    Conv2D_[2]           
+       nl_3_nl (Nonlinearity, CONV_2D)                  [b:1,h:1,w:23,c:128]                           2,944                         conv2d_3   |                 -2,944(-100.0%)    
+------ ------------------------------------------------ ---------------------- ----------------- ----------- -------------------------------- --- --------------- ------------------ -------------------- 
+4      model_batch_normal..chnorm_mul (Placeholder, )   [b:128]                128/128                                                          |                 +2,944(+100.0%)    Eltwise/mul_[3]      
+       eltwise_4 (Eltwise, MUL)                         [b:1,h:1,w:23,c:128]                           2,944                          nl_3_nl   |                 -2,944(-100.0%)    
+                                                                                                               model_batch_normal..chnorm_mul   | 
+------ ------------------------------------------------ ---------------------- ----------------- ----------- -------------------------------- --- --------------- ------------------ -------------------- 
+5      model_batch_normal..chnorm_sub (Placeholder, )   [b:128]                128/128                                                          |                 +2,944(+100.0%)    Eltwise/add_[4]      
+       eltwise_5 (Eltwise, ADD)                         [b:1,h:1,w:23,c:128]                           2,944                        eltwise_4   |                 -2,944(-100.0%)    
+                                                                                                               model_batch_normal..chnorm_sub   | 
+------ ------------------------------------------------ ---------------------- ----------------- ----------- -------------------------------- --- --------------- ------------------ -------------------- 
+6      reshape_6 (Reshape, RESHAPE)                     [b:1,h:23,c:128]                                                            eltwise_5   |                                    
+------ ------------------------------------------------ ---------------------- ----------------- ----------- -------------------------------- --- --------------- ------------------ -------------------- 
+7      reshape_7 (Reshape, EXPAND_DIMS)                 [b:1,h:1,w:23,c:128]                                                        reshape_6   |                                    
+------ ------------------------------------------------ ---------------------- ----------------- ----------- -------------------------------- --- --------------- ------------------ -------------------- 
+8      conv2d_8 (Conv2D, CONV_2D)                       [b:1,h:1,w:14,c:128]   163,968/164,352     2,293,888                        reshape_7   |                                    Conv2D_[5]           
+       nl_8_nl (Nonlinearity, CONV_2D)                  [b:1,h:1,w:14,c:128]                           1,792                         conv2d_8   |                 -1,792(-100.0%)    
+------ ------------------------------------------------ ---------------------- ----------------- ----------- -------------------------------- --- --------------- ------------------ -------------------- 
+9      model_batch_normal..chnorm_mul (Placeholder, )   [b:128]                128/128                                                          |                 +1,792(+100.0%)    Eltwise/mul_[6]      
+       eltwise_9 (Eltwise, MUL)                         [b:1,h:1,w:14,c:128]                           1,792                          nl_8_nl   |                 -1,792(-100.0%)    
+                                                                                                               model_batch_normal..chnorm_mul   | 
+------ ------------------------------------------------ ---------------------- ----------------- ----------- -------------------------------- --- --------------- ------------------ -------------------- 
+10     model_batch_normal..chnorm_sub (Placeholder, )   [b:128]                128/128                                                          |                 +1,792(+100.0%)    Eltwise/add_[7]      
+       eltwise_10 (Eltwise, ADD)                        [b:1,h:1,w:14,c:128]                           1,792                        eltwise_9   |                 -1,792(-100.0%)    
+                                                                                                               model_batch_normal..chnorm_sub   | 
+------ ------------------------------------------------ ---------------------- ----------------- ----------- -------------------------------- --- --------------- ------------------ -------------------- 
+11     reshape_11 (Reshape, RESHAPE)                    [b:1,h:14,c:128]                                                           eltwise_10   |                                    
+------ ------------------------------------------------ ---------------------- ----------------- ----------- -------------------------------- --- --------------- ------------------ -------------------- 
+12     reshape_12 (Reshape, EXPAND_DIMS)                [b:1,h:14,w:1,c:128]                                                       reshape_11   |                                    
+------ ------------------------------------------------ ---------------------- ----------------- ----------- -------------------------------- --- --------------- ------------------ -------------------- 
+13     pool_13 (Pool, MAX_POOL_2D)                      [b:1,h:3,w:1,c:128]                            1,536                       reshape_12   |                                    Pool_[8]             
+------ ------------------------------------------------ ---------------------- ----------------- ----------- -------------------------------- --- --------------- ------------------ -------------------- 
+14     reshape_14 (Reshape, RESHAPE)                    [b:1,c:384]                                                                   pool_13   |                                    
+------ ------------------------------------------------ ---------------------- ----------------- ----------- -------------------------------- --- --------------- ------------------ -------------------- 
+15     model_dense_MatMul (Placeholder, )               [b:64,c:384]           24,576/24,576                                                    | +256(+1.0%)     +24,640(+100.0%)   Dense_[9]            
+       dense_bias (Placeholder, )                       [b:64]                 64/256                                                           | -256(-100.0%)                      
+       gemm_15 (Gemm, FULLY_CONNECTED)                  [b:1,c:64]                                    24,640                       reshape_14   |                 -24,640(-100.0%)   
+                                                                                                                           model_dense_MatMul   | 
+                                                                                                                                   dense_bias   | 
+       nl_15_nl (Nonlinearity, FULLY_CONNECTED)         [b:1,c:64]                                        64                          gemm_15   |                 -64(-100.0%)       
+------ ------------------------------------------------ ---------------------- ----------------- ----------- -------------------------------- --- --------------- ------------------ -------------------- 
+16     model_dense_out_MatMul (Placeholder, )           [b:7,c:64]             448/448                                                          | +28(+6.2%)      +455(+100.0%)      Dense_[10]           
+       dense_out_bias (Placeholder, )                   [b:7]                  7/28                                                             | -28(-100.0%)                       
+       gemm_16 (Gemm, FULLY_CONNECTED)                  [b:1,c:7]                                        455                         nl_15_nl   |                 -455(-100.0%)      
+                                                                                                                       model_dense_out_MatMul   | 
+                                                                                                                               dense_out_bias   | 
+------ ------------------------------------------------ ---------------------- ----------------- ----------- -------------------------------- --- --------------- ------------------ -------------------- 
+17     nl_17 (Nonlinearity, SOFTMAX)                    [b:1,c:7]                                        105                          gemm_16   |                                    Nonlinearity_[11]    
+------ ------------------------------------------------ ---------------------- ----------------- ----------- -------------------------------- --- --------------- ------------------ -------------------- 
+18     conversion_18 (Conversion, DEQUANTIZE)           [b:1,c:7]                                         14                            nl_17   |                                    Conversion_[o][12]   
+------ ------------------------------------------------ ---------------------- ----------------- ----------- -------------------------------- --- --------------- ------------------ -------------------- 
+model/c-model: macc=2,423,598/2,418,798 -4,800(-0.2%) weights=194,524/194,524  activations=--/16,768 io=--/0
+
+
+
+Generated C-graph summary
+------------------------------------------------------------------------------------------------------------------------
+model name            : cnn_model_fft_ss7_quantized
+c-name                : network
+c-node #              : 13
+c-array #             : 31
+activations size      : 16768 (1 segment)
+weights size          : 194524 (1 segment)
+macc                  : 2418798
+inputs                : ['serving_default_input_10_output']
+outputs               : ['conversion_18_output']
+
+C-Arrays (31)
+------ ---------------------------------------------- --------------- ------------------------- ----------- --------- 
+c_id   name (*_array)                                 item/size       domain/mem-pool           c-type      comment   
+------ ---------------------------------------------- --------------- ------------------------- ----------- --------- 
+0      conv2d_3_bias                                  128/512         weights/weights           const s32             
+1      conv2d_3_output                                2944/2944       activations/**default**   s8                    
+2      conv2d_3_scratch0                              7032/7032       activations/**default**   s8                    
+3      conv2d_3_weights                               3840/3840       weights/weights           const s8              
+4      conv2d_8_bias                                  128/512         weights/weights           const s32             
+5      conv2d_8_output                                1792/1792       activations/**default**   s8                    
+6      conv2d_8_scratch0                              12032/12032     activations/**default**   s8                    
+7      conv2d_8_weights                               163840/163840   weights/weights           const s8              
+8      conversion_0_output                            96/96           activations/**default**   s8                    
+9      conversion_18_output                           7/28            activations/**default**   float       /output   
+10     eltwise_10_output                              1792/1792       activations/**default**   s8                    
+11     eltwise_4_output                               2944/2944       activations/**default**   s8                    
+12     eltwise_5_output                               2944/2944       activations/**default**   s8                    
+13     eltwise_9_output                               1792/1792       activations/**default**   s8                    
+14     gemm_15_bias                                   64/256          weights/weights           const s32             
+15     gemm_15_output                                 64/64           activations/**default**   s8                    
+16     gemm_15_scratch0                               384/768         activations/**default**   s16                   
+17     gemm_15_weights                                24576/24576     weights/weights           const s8              
+18     gemm_16_bias                                   7/28            weights/weights           const s32             
+19     gemm_16_output                                 7/7             activations/**default**   s8                    
+20     gemm_16_scratch0                               64/128          activations/**default**   s16                   
+21     gemm_16_weights                                448/448         weights/weights           const s8              
+22     model_batch_normalization_1_batchnorm_mul_4D   128/128         weights/weights           const s8              
+23     model_batch_normalization_1_batchnorm_sub_4D   128/128         weights/weights           const s8              
+24     model_batch_normalization_batchnorm_mul_4D     128/128         weights/weights           const s8              
+25     model_batch_normalization_batchnorm_sub_4D     128/128         weights/weights           const s8              
+26     nl_17_output                                   7/7             activations/**default**   s8                    
+27     nl_17_scratch0                                 62/248          activations/**default**   s32                   
+28     pool_13_output                                 384/384         activations/**default**   s8                    
+29     serving_default_input_10_output                96/384          activations/**default**   float       /input    
+30     transpose_1_output                             96/96           activations/**default**   s8                    
+------ ---------------------------------------------- --------------- ------------------------- ----------- --------- 
+
+C-Layers (13)
+------ ---------------- ---- --------------- --------- -------- ------------------------------------------------- ------------------------ 
+c_id   name (*_layer)   id   layer_type      macc      rom      tensors                                           shape (array id)         
+------ ---------------- ---- --------------- --------- -------- ------------------------------------------------- ------------------------ 
+0      conversion_0     0    Conversion      192       0        I: serving_default_input_10_output                f32(1x3x32) (29)         
+                                                                O: conversion_0_output                            int8(1x3x32) (8)         
+------ ---------------- ---- --------------- --------- -------- ------------------------------------------------- ------------------------ 
+1      transpose_1      1    Transpose       48        0        I: conversion_0_output                            int8(1x3x32) (8)         
+                                                                O: transpose_1_output                             int8(1x32x3) (30)        
+------ ---------------- ---- --------------- --------- -------- ------------------------------------------------- ------------------------ 
+2      conv2d_3         3    Conv2D          88448     4352     I: transpose_1_output                             int8(1x32x3) (30)        
+                                                                S: conv2d_3_scratch0                                                       
+                                                                W: conv2d_3_weights                               int8(128x1x10x3) (3)     
+                                                                W: conv2d_3_bias                                  int32(128) (0)           
+                                                                O: conv2d_3_output                                int8(1x1x23x128) (1)     
+------ ---------------- ---- --------------- --------- -------- ------------------------------------------------- ------------------------ 
+3      eltwise_4        4    Eltwise/mul     2944      128      I: conv2d_3_output                                int8(1x1x23x128) (1)     
+                                                                W: model_batch_normalization_batchnorm_mul_4D     int8(1x1x128) (24)       
+                                                                O: eltwise_4_output                               int8(1x1x23x128) (11)    
+------ ---------------- ---- --------------- --------- -------- ------------------------------------------------- ------------------------ 
+4      eltwise_5        5    Eltwise/add     2944      128      I: eltwise_4_output                               int8(1x1x23x128) (11)    
+                                                                W: model_batch_normalization_batchnorm_sub_4D     int8(1x1x128) (25)       
+                                                                O: eltwise_5_output                               int8(1x1x23x128) (12)    
+------ ---------------- ---- --------------- --------- -------- ------------------------------------------------- ------------------------ 
+5      conv2d_8         8    Conv2D          2293888   164352   I: eltwise_5_output                               int8(1x1x23x128) (12)    
+                                                                S: conv2d_8_scratch0                                                       
+                                                                W: conv2d_8_weights                               int8(128x1x10x128) (7)   
+                                                                W: conv2d_8_bias                                  int32(128) (4)           
+                                                                O: conv2d_8_output                                int8(1x1x14x128) (5)     
+------ ---------------- ---- --------------- --------- -------- ------------------------------------------------- ------------------------ 
+6      eltwise_9        9    Eltwise/mul     1792      128      I: conv2d_8_output                                int8(1x1x14x128) (5)     
+                                                                W: model_batch_normalization_1_batchnorm_mul_4D   int8(1x1x128) (22)       
+                                                                O: eltwise_9_output                               int8(1x1x14x128) (13)    
+------ ---------------- ---- --------------- --------- -------- ------------------------------------------------- ------------------------ 
+7      eltwise_10       10   Eltwise/add     1792      128      I: eltwise_9_output                               int8(1x1x14x128) (13)    
+                                                                W: model_batch_normalization_1_batchnorm_sub_4D   int8(1x1x128) (23)       
+                                                                O: eltwise_10_output                              int8(1x1x14x128) (10)    
+------ ---------------- ---- --------------- --------- -------- ------------------------------------------------- ------------------------ 
+8      pool_13          13   Pool            1536      0        I: eltwise_10_output                              int8(1x1x14x128) (10)    
+                                                                O: pool_13_output                                 int8(1x3x1x128) (28)     
+------ ---------------- ---- --------------- --------- -------- ------------------------------------------------- ------------------------ 
+9      gemm_15          15   Dense           24640     24832    I: pool_13_output                                 int8(1x3x1x128) (28)     
+                                                                S: gemm_15_scratch0                                                        
+                                                                W: gemm_15_weights                                int8(64x384) (17)        
+                                                                W: gemm_15_bias                                   int32(64) (14)           
+                                                                O: gemm_15_output                                 int8(1x64) (15)          
+------ ---------------- ---- --------------- --------- -------- ------------------------------------------------- ------------------------ 
+10     gemm_16          16   Dense           455       476      I: gemm_15_output                                 int8(1x64) (15)          
+                                                                S: gemm_16_scratch0                                                        
+                                                                W: gemm_16_weights                                int8(7x64) (21)          
+                                                                W: gemm_16_bias                                   int32(7) (18)            
+                                                                O: gemm_16_output                                 int8(1x7) (19)           
+------ ---------------- ---- --------------- --------- -------- ------------------------------------------------- ------------------------ 
+11     nl_17            17   Nonlinearity    105       0        I: gemm_16_output                                 int8(1x7) (19)           
+                                                                S: nl_17_scratch0                                                          
+                                                                O: nl_17_output                                   int8(1x7) (26)           
+------ ---------------- ---- --------------- --------- -------- ------------------------------------------------- ------------------------ 
+12     conversion_18    18   Conversion      14        0        I: nl_17_output                                   int8(1x7) (26)           
+                                                                O: conversion_18_output                           f32(1x7) (9)             
+------ ---------------- ---- --------------- --------- -------- ------------------------------------------------- ------------------------ 
+
+
+
+Number of operations per c-layer
+------- ------ ---------------------------- ----------- ------------- 
+c_id    m_id   name (type)                          #op          type 
+------- ------ ---------------------------- ----------- ------------- 
+0       0      conversion_0 (Conversion)            192   smul_f32_s8 
+1       1      transpose_1 (Transpose)               48    smul_s8_s8 
+2       3      conv2d_3 (Conv2D)                 88,448    smul_s8_s8 
+3       4      eltwise_4 (Eltwise/mul)            2,944      op_s8_s8 
+4       5      eltwise_5 (Eltwise/add)            2,944      op_s8_s8 
+5       8      conv2d_8 (Conv2D)              2,293,888    smul_s8_s8 
+6       9      eltwise_9 (Eltwise/mul)            1,792      op_s8_s8 
+7       10     eltwise_10 (Eltwise/add)           1,792      op_s8_s8 
+8       13     pool_13 (Pool)                     1,536    smul_s8_s8 
+9       15     gemm_15 (Dense)                   24,640    smul_s8_s8 
+10      16     gemm_16 (Dense)                      455    smul_s8_s8 
+11      17     nl_17 (Nonlinearity)                 105      op_s8_s8 
+12      18     conversion_18 (Conversion)            14   smul_s8_f32 
+------- ------ ---------------------------- ----------- ------------- 
+total                                         2,418,798 
+
+Number of operation types
+---------------- ----------- ----------- 
+operation type             #           % 
+---------------- ----------- ----------- 
+smul_f32_s8              192        0.0% 
+smul_s8_s8         2,409,015       99.6% 
+op_s8_s8               9,577        0.4% 
+smul_s8_f32               14        0.0% 
+
+Complexity report (model)
+------ ------------------------------------------ ------------------------- ------------------------- ------ 
+m_id   name                                       c_macc                    c_rom                     c_id   
+------ ------------------------------------------ ------------------------- ------------------------- ------ 
+0      serving_default_input_10                   |                  0.0%   |                  0.0%   [0]    
+1      transpose_1                                |                  0.0%   |                  0.0%   [1]    
+3      conv2d_3                                   |                  3.7%   |                  2.2%   [2]    
+4      model_batch_normalization_batchnorm_mul    |                  0.1%   |                  0.1%   [3]    
+5      model_batch_normalization_batchnorm_sub    |                  0.1%   |                  0.1%   [4]    
+8      conv2d_8                                   ||||||||||||||||  94.8%   ||||||||||||||||  84.5%   [5]    
+9      model_batch_normalization_1_..chnorm_mul   |                  0.1%   |                  0.1%   [6]    
+10     model_batch_normalization_1_..chnorm_sub   |                  0.1%   |                  0.1%   [7]    
+13     pool_13                                    |                  0.1%   |                  0.0%   [8]    
+15     model_dense_MatMul                         |                  1.0%   |||               12.8%   [9]    
+16     model_dense_out_MatMul                     |                  0.0%   |                  0.2%   [10]   
+17     nl_17                                      |                  0.0%   |                  0.0%   [11]   
+18     conversion_18                              |                  0.0%   |                  0.0%   [12]   
+------ ------------------------------------------ ------------------------- ------------------------- ------ 
+macc=2,418,798 weights=194,524 act=16,768 ram_io=0
+ 
+ Requested memory size by section - "stm32u3" target
+ ------------------------------- -------- --------- ------- -------- 
+ module                              text    rodata    data      bss 
+ ------------------------------- -------- --------- ------- -------- 
+ NetworkRuntime1101_CM33_GCC.a     23,316         0       0        0 
+ network.o                          2,370     1,268   1,508       40 
+ lib (toolchain)*                   2,116         0       0        0 
+ ------------------------------- -------- --------- ------- -------- 
+ RT total**                        27,802     1,268   1,508       40 
+ ------------------------------- -------- --------- ------- -------- 
+ weights                                0   194,528       0        0 
+ activations                            0         0       0   16,768 
+ states                                 0         0       0        0 
+ io                                     0         0       0        0 
+ ------------------------------- -------- --------- ------- -------- 
+ TOTAL                             27,802   195,796   1,508   16,808 
+ ------------------------------- -------- --------- ------- -------- 
+ *  toolchain objects (libm/libgcc*)
+ ** RT AI runtime objects (kernels+infrastructure)
+  
+  Summary - "stm32u3" target
+  --------------------------------------------------
+               FLASH (ro)      %*   RAM (rw)      % 
+  --------------------------------------------------
+  RT total         30,578   13.6%      1,548   8.5% 
+  --------------------------------------------------
+  TOTAL           225,106             18,316        
+  --------------------------------------------------
+  *  rt/total
+
+
+Generated files (5)
+-------------------------------------------------------------------------------------------------------------- 
+C:\ST\CurrentDev\STM32U3-2M-GettingStarted-AudioSensing_har\Utils\Deploy\sHAR\st_ai_output\network_data.h      
+C:\ST\CurrentDev\STM32U3-2M-GettingStarted-AudioSensing_har\Utils\Deploy\sHAR\st_ai_output\network_data.c      
+C:\ST\CurrentDev\STM32U3-2M-GettingStarted-AudioSensing_har\Utils\Deploy\sHAR\st_ai_output\network.h           
+C:\ST\CurrentDev\STM32U3-2M-GettingStarted-AudioSensing_har\Utils\Deploy\sHAR\st_ai_output\network.c           
+C:\ST\CurrentDev\STM32U3-2M-GettingStarted-AudioSensing_har\Utils\Deploy\sHAR\st_ai_output\network_details.h   

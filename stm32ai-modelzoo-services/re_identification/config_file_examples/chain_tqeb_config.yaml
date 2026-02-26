@@ -1,0 +1,111 @@
+general:
+  project_name: my_project
+  logs_dir: logs
+  saved_models_dir: saved_models
+  display_figures: True
+  global_seed: 127
+  gpu_memory_limit: 8
+
+model:
+  model_name: mobilenetv1_a025 
+  # choices: ['efficientnetv2b0', 'efficientnetv2b1', 'efficientnetv2b2', 'efficientnetv2b3', 'efficientnetv2s',
+  #           'mobilenetv1_a025', 'mobilenetv1_a050', 'mobilenetv1_a075', 'mobilenetv1_a100',
+  #           'mobilenetv2_a035', 'mobilenetv2_a050', 'mobilenetv2_a075', 'mobilenetv2_a100', 'mobilenetv2_a130', 'mobilenetv2_a140',
+  #           'resnet50v2', 'resnet8', 'resnet20', 'resnet32', 
+  #           'osnet_a025', 'osnet_a050', 'osnet_a075', 'osnet_a100']
+  input_shape: (256, 128, 3)
+  pretrained:         # Optional, Bool 
+
+operation_mode: chain_tqeb
+
+dataset:
+  dataset_name: DeepSportradar
+  training_path: ./datasets/DeepSportradar-ReID/reid_training  # Mandatory
+  validation_path:        # Optional
+  validation_split: 0.2   # Optional, default value is 0.2
+  test_query_path:        ./datasets/DeepSportradar-ReID/reid_test/query
+  test_gallery_path:      ./datasets/DeepSportradar-ReID/reid_test/gallery
+  quantization_path:      # Optional
+  quantization_split:     0.1  # Optional, default value is 0.05
+  check_image_files: False  # Optional, set it to True if you want to check that all the image files can be read successfully
+  seed: 127               # Optional, there is a default seed
+
+preprocessing:
+   rescaling:
+      scale: 1/127.5
+      offset: -1
+   resizing:
+      aspect_ratio: fit
+      interpolation: nearest
+   color_mode: rgb
+
+data_augmentation:
+  random_contrast:
+    factor: 0.4
+  random_brightness:
+    factor: 0.2
+  random_flip:
+    mode: horizontal_and_vertical
+  random_translation:
+    width_factor: 0.2
+    height_factor: 0.2
+  random_rotation:
+    factor: 0.15
+  random_zoom:
+    width_factor: 0.25
+    height_factor: 0.25
+
+training:
+  frozen_layers: None
+  dropout: 0.25
+  batch_size: 128
+  epochs: 200
+  optimizer:
+    Adam:
+      learning_rate: 0.01
+  callbacks:
+    ReduceLROnPlateau:
+      monitor: val_loss
+      mode: min
+      factor: 0.7
+      patience: 40
+      min_lr: 1.0e-05
+    EarlyStopping:
+      monitor: val_loss
+      mode: min
+      restore_best_weights: true
+      patience: 100
+  triplet_loss:
+    margin: 0.3  # Optional between [0, 1], default is 0.3
+    strategy: semi_hard   #choices=['hard', 'semi_hard', 'simple'], default is 'hard'
+    distance_metric: cosine  # Optional, choices=['euclidean', 'cosine'], default is 'cosine'
+
+evaluation:
+  reid_distance_metric: cosine  # Optional, choices=['euclidean', 'cosine'], default is 'cosine'
+
+
+quantization:
+  quantizer: Onnx_quantizer
+  quantization_type: PTQ
+  quantization_input_type: uint8
+  quantization_output_type: int8
+  export_dir: quantized_models
+  onnx_extra_options:
+    CalibMovingAverage: True
+
+benchmarking:
+   board: STM32N6570-DK #STM32N6570-DK #STM32H747I-DISCO
+
+tools:
+  stedgeai:
+    optimization: balanced
+    on_cloud: True
+    path_to_stedgeai: C:/ST/STEdgeAI/<x.y>/Utilities/windows/stedgeai.exe
+  path_to_cubeIDE: C:/ST/STM32CubeIDE_<*.*.*>/STM32CubeIDE/stm32cubeide.exe
+
+mlflow:
+   uri: ./tf/src/experiments_outputs/mlruns
+
+hydra:
+   run:
+      dir: ./tf/src/experiments_outputs/${now:%Y_%m_%d_%H_%M_%S}

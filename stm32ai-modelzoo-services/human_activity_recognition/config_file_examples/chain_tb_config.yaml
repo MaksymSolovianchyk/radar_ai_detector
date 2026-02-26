@@ -1,0 +1,62 @@
+general:
+  project_name: human_activity_recognition
+  logs_dir: logs
+  saved_models_dir: saved_models
+  display_figures: True
+  global_seed: 123
+  gpu_memory_limit: 4  
+operation_mode: chain_tb
+
+dataset:
+  dataset_name: wisdm  # wisdm or mobility_v1
+  class_names: [Jogging,Stationary,Stairs,Walking]  # [Stationary,Walking,Jogging,Biking] for mobility_v1
+  training_path: ./datasets/WISDM_ar_v1.1/WISDM_ar_v1.1_raw.txt # need paths to train.pkl for mobility_v1
+  validation_split: 0.2
+  test_path: # need paths to test.pkl for mobility_v1
+  test_split: 0.25
+
+
+preprocessing:
+  gravity_rot_sup: True
+  normalization: False
+
+model:
+  model_name: st_ign  # choices=['st_ign', 'st_gmp', 'custom_model']
+  input_shape: (24, 3, 1)
+
+training:
+  dropout: 0.5     # Optional, only used for `ign` or `gmp` model use it if you want a dropout layer to be included in the model
+  batch_size: 256
+  epochs: 200
+  optimizer:
+    Adam:
+      learning_rate: 0.001
+  callbacks:          # Optional section
+    ReduceLROnPlateau:
+      monitor: val_accuracy
+      mode: max
+      factor: 0.5
+      patience: 40
+      min_lr: 1.0e-05
+    EarlyStopping:
+      monitor: val_accuracy
+      mode: max
+      restore_best_weights: true
+      patience: 60
+
+tools:
+   stedgeai:
+      optimization: balanced
+      on_cloud: True
+      path_to_stedgeai: C:/ST/STEdgeAI/<x.y>/Utilities/windows/stedgeai.exe
+   path_to_cubeIDE: C:/ST/STM32CubeIDE_<*.*.*>/STM32CubeIDE/stm32cubeide.exe
+
+benchmarking:
+  board: B-U585I-IOT02A
+
+mlflow:
+  uri: ./tf/src/experiments_outputs/mlruns
+
+hydra:
+  run:
+    dir: ./tf/src/experiments_outputs/${now:%Y_%m_%d_%H_%M_%S}

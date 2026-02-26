@@ -1,0 +1,33 @@
+[submodule "application_code/audio/STM32N6"]
+	path = application_code/audio/STM32N6
+	url = https://github.com/STMicroelectronics/STM32N6-GettingStarted-Audio.git
+[submodule "application_code/face_detection/STM32N6"]
+	path = application_code/face_detection/STM32N6
+	url = https://github.com/STMicroelectronics/STM32N6-GettingStarted-FaceDetection.git
+[submodule "application_code/hand_posture/STM32F4"]
+	path = application_code/hand_posture/STM32F4
+	url = https://github.com/STMicroelectronics/STM32F4-GettingStarted-HandPosture.git
+[submodule "application_code/image_classification/STM32N6"]
+	path = application_code/image_classification/STM32N6
+	url = https://github.com/STMicroelectronics/STM32N6-GettingStarted-ImageClassification.git
+[submodule "application_code/image_classification/STM32H7"]
+	path = application_code/image_classification/STM32H7
+	url = https://github.com/STMicroelectronics/STM32H7-GettingStarted-ImageClassification.git
+[submodule "application_code/instance_segmentation/STM32N6"]
+	path = application_code/instance_segmentation/STM32N6
+	url = https://github.com/STMicroelectronics/STM32N6-GettingStarted-InstanceSegmentation.git
+[submodule "application_code/object_detection/STM32N6"]
+	path = application_code/object_detection/STM32N6
+	url = https://github.com/STMicroelectronics/STM32N6-GettingStarted-ObjectDetection.git
+[submodule "application_code/object_detection/STM32H7"]
+	path = application_code/object_detection/STM32H7
+	url = https://github.com/STMicroelectronics/STM32H7-GettingStarted-ObjectDetection.git
+[submodule "application_code/pose_estimation/STM32N6"]
+	path = application_code/pose_estimation/STM32N6
+	url = https://github.com/STMicroelectronics/STM32N6-GettingStarted-PoseEstimation.git
+[submodule "application_code/re_identification/STM32N6"]
+	path = application_code/re_identification/STM32N6
+	url = https://github.com/STMicroelectronics/STM32N6-GettingStarted-ReID.git
+[submodule "application_code/semantic_segmentation/STM32N6"]
+	path = application_code/semantic_segmentation/STM32N6
+	url = https://github.com/STMicroelectronics/STM32N6-GettingStarted-SemanticSegmentation.git

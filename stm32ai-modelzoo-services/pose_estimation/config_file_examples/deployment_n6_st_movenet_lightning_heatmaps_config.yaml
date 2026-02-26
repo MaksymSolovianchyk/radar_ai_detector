@@ -1,0 +1,40 @@
+model:
+   model_type: heatmaps_spe # heatmaps_spe, yolo_mpe
+   # path to a `.tflite` or `.onnx` file.
+   model_path: ../../stm32ai-modelzoo/pose_estimation/movenet/ST_pretrainedmodel_custom_dataset/custom_coco_person_17kpts/st_movenet_lightning_a100_heatmaps_192/st_movenet_lightning_a100_heatmaps_192_int8.tflite
+
+operation_mode: deployment
+
+dataset:
+   class_names: [person]
+
+preprocessing:
+   resizing:
+      interpolation: bilinear
+      aspect_ratio: crop
+   color_mode: rgb # rgb, bgr
+
+postprocessing:
+   kpts_conf_thresh: 0.15
+
+tools:
+   stedgeai:
+      optimization: balanced
+      on_cloud: False
+      path_to_stedgeai: C:/ST/STEdgeAI/3.0/Utilities/windows/stedgeai.exe
+   path_to_cubeIDE: C:/ST/STM32CubeIDE_1.17.0/STM32CubeIDE/stm32cubeide.exe
+
+deployment:
+   c_project_path: ../application_code/pose_estimation/STM32N6/
+   IDE: GCC
+   verbosity: 1
+   hardware_setup:
+      serie: STM32N6
+      board: STM32N6570-DK
+
+hydra:
+   run:
+      dir: ./tf/src/experiments_outputs/${now:%Y_%m_%d_%H_%M_%S}
+
+mlflow:
+   uri: ./tf/src/experiments_outputs/mlruns

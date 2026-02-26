@@ -1,0 +1,49 @@
+operation_mode: quantization
+
+general:
+  workers: 4 
+  no_prefetcher: true
+  display_figures: False 
+
+model: 
+  framework: 'torch'
+  model_name: 'mobilenetv2_w035_pt' 
+  pretrained: True
+  pretrained_dataset: "imagenet"
+  input_shape: [3, 224, 224]
+
+quantization:
+   quantizer: Onnx_quantizer
+   quantization_type: PTQ
+   quantization_input_type: uint8
+   quantization_output_type: float
+   export_dir: quantized_models
+
+dataset:
+  dataset_name: "imagenet" # options "flowers102", "food101", "imagenet"
+  class_names: ''
+  classes_file_path: ./datasets/deployment_labels_imagenet.txt
+  #data_dir: "/local/datasets/" # there shud be imagenet folder inside this directory # can also be used for quantization
+  num_classes: 1000 # change according to your dataset
+  #train_split: "train"
+  #val_split: "val"
+  quantization_split: 0.01
+  quantization_path: "/local/datasets/ic_imagenet_2012/val/"
+  
+preprocessing: 
+  rescaling:
+    scale: 1/255.0 # TODO scale node is already present under data_augmentation
+    offset: 0
+  resizing:
+    interpolation: nearest # nearest 'Image resize interpolation type (overrides model)'
+    aspect_ratio: fit
+  color_mode: rgb
+  # mean: [0.485, 0.456, 0.406] # 'Override mean pixel value of dataset'
+  # std: [0.229, 0.224, 0.225] # 'Override std deviation of dataset'
+
+mlflow:
+  uri: ./pt/src/experiments_outputs/mlruns
+
+hydra:
+  run:
+    dir: ./pt/src/experiments_outputs/${now:%Y_%m_%d_%H_%M_%S}

@@ -1,0 +1,11 @@
+dataset:
+  dataset_name: wider_face
+  dataset_path: /local/data/od_wider_face/
+
+settings:
+  max_detections: 710
+  max_percentage_filtered: 1
+  
+hydra:
+  run:
+    dir: outputs/${now:%Y_%m_%d_%H_%M_%S}

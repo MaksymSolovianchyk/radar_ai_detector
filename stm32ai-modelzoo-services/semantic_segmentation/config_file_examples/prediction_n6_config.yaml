@@ -1,0 +1,37 @@
+model:
+  model_type: deeplab
+  model_path: ../../stm32ai-modelzoo/semantic_segmentation/deeplabv3/ST_pretrainedmodel_public_dataset/person_coco_2017_pascal_voc_2012/st_deeplabv3_mnv2_a050_s16_asppv2_416/st_deeplabv3_mnv2_a050_s16_asppv2_416_qdq_int8.onnx
+
+operation_mode: prediction
+
+dataset:
+   dataset_name: person_coco_2017_pascal_voc_2012
+   class_names: ["background", "person"]
+   prediction_path: ./datasets/person_COCO2017_VOC2012/pred_images
+preprocessing:
+   rescaling:
+      scale: 1/127.5
+      offset: -1
+   resizing:
+      interpolation: bilinear
+      aspect_ratio: fit
+   color_mode: rgb
+
+prediction:
+   profile: profile_O3
+   input_type: uint8     # int8 / uint8 / float32
+   output_type: int8     # int8 / uint8 / float32
+   input_chpos: chlast   # chlast / chfirst
+   output_chpos: chlast  # chlast / chfirst
+   target: stedgeai_n6 # host, stedgeai_host, stedgeai_n6
+
+tools:
+   stedgeai:
+      path_to_stedgeai: C:/ST/STEdgeAI/3.0/Utilities/windows/stedgeai.exe
+
+mlflow:
+   uri: ./tf/src/experiments_outputs/mlruns
+
+hydra:
+   run:
+      dir: ./tf/src/experiments_outputs/${now:%Y_%m_%d_%H_%M_%S}

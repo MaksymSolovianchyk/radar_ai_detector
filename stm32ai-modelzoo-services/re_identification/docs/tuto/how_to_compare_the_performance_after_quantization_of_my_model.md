@@ -1,0 +1,97 @@
+# How to compare the performance after quantization of my model?
+
+The quantization process optimizes the model for efficient deployment on embedded devices by reducing its memory usage (Flash/RAM) and accelerating its inference time, with minimal degradation in model performance. With ST Model Zoo, you can easily check the performance of your model, quantize your model and compare this performance after quantization. You can also simply do one of these actions alone.
+
+## Operation modes:
+
+Depending on what you want to do, you can use the operation modes below:
+
+- Evaluate:
+    - To evaluate a model, quantized or not (.keras, .tflite or QDQ onnx)
+- Chain_eqe:
+    - To evaluate a model, quantize it and evaluate it again after quantization for comparison.
+- Chain_eqeb:
+    - To also add a benchmark of the quantized model.
+
+For any details regarding the parameters of the config file, you can look here:
+- [Evaluation documentation](../README_EVALUATION.md)
+- [Quantization documentation](../README_QUANTIZATION.md)
+- [Benchmark documentation](../README_BENCHMARKING.md)
+
+
+## User_config.yaml:
+
+The way ST Model Zoo works is that you edit the user_config.yaml available for each use case and run the stm32ai_main.py python script. 
+
+Here is an example where we evaluate a .keras model before quantizing it, evaluate it again for comparison:
+
+The most important parts to define are:
+- The model path
+- The operation mode
+- The dataset for quantization and test
+- The preprocessing (usually the same used in training)
+
+```yaml
+# user_config.yaml
+model:
+   model_path: ../../stm32ai-modelzoo/re_identification/osnet/ST_pretrainedmodel_public_dataset/DeepSportradar/osnet_a100_256_128_tfs/osnet_a100_256_128_tfs.keras
+
+operation_mode: chain_eqe
+
+dataset:
+  dataset_name: DeepSportradar
+  class_names:
+  test_query_path:        ./datasets/DeepSportradar-ReID/reid_test/query
+  test_gallery_path:      ./datasets/DeepSportradar-ReID/reid_test/gallery
+  quantization_path:      ./datasets/DeepSportradar-ReID/reid_training 
+  quantization_split: 0.2
+
+evaluation:
+  reid_distance_metric: cosine  # Optional, choices=['euclidean', 'cosine], default is 'cosine'
+
+preprocessing:
+  rescaling:
+    scale: 1/127.5
+    offset: -1
+  resizing:
+    interpolation: nearest
+    aspect_ratio: fit
+  color_mode: rgb
+
+quantization:
+   quantizer: TFlite_converter
+   quantization_type: PTQ
+   quantization_input_type: uint8
+   quantization_output_type: int8
+   export_dir: quantized_models
+
+mlflow:
+   uri: ./tf/src/experiments_outputs/mlruns
+
+hydra:
+   run:
+      dir: ./tf/src/experiments_outputs/${now:%Y_%m_%d_%H_%M_%S}
+```
+When evaluating the model, it is highly recommended to use real data for the quantization.
+
+## Run the script:
+
+Edit the user_config.yaml then open a CMD (make sure to be in the UC folder). Finally, run the command:
+
+```powershell
+python stm32ai_main.py
+```
+You can also use any .yaml file using command below:
+```powershell
+python stm32ai_main.py --config-path=path_to_the_folder_of_the_yaml --config-name=name_of_your_yaml_file
+```
+
+## Local benchmarking:
+
+To make the benchmark locally instead of using the ST Edge AI Development Cloud you need to add the path for path_to_stedgeai and to set on_cloud to false in the yaml.
+
+To download the tools:
+- [STEdgeAI Core](https://www.st.com/en/development-tools/stedgeai-core.html)
+- [STM32CubeIDE](https://www.st.com/en/development-tools/stm32cubeide.html)
+
+

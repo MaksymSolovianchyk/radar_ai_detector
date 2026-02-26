@@ -1,0 +1,34 @@
+model:
+  model_type: deeplab
+  model_path: ../../stm32ai-modelzoo/semantic_segmentation/deeplabv3/ST_pretrainedmodel_public_dataset/person_coco_2017_pascal_voc_2012/st_deeplabv3_mnv2_a050_s16_asppv2_320/st_deeplabv3_mnv2_a050_s16_asppv2_320.keras
+
+operation_mode: quantization
+
+dataset:
+  dataset_name: person_coco_2017_pascal_voc_2012
+  quantization_path: ./datasets/VOC2012_train_val/JPEGImages
+  quantization_masks_path: ./datasets/VOC2012_train_val/SegmentationClassAug
+  quantization_files_path: ./datasets/VOC2012_train_val/ImageSets/Segmentation/quantization.txt
+
+preprocessing:
+   rescaling:
+      scale: 1/127.5
+      offset: -1
+   resizing:
+      aspect_ratio: fit
+      interpolation: bilinear
+   color_mode: rgb
+
+quantization:
+   quantizer: TFlite_converter
+   quantization_type: PTQ
+   quantization_input_type: uint8
+   quantization_output_type: float
+   export_dir: quantized_models
+
+mlflow:
+   uri: ./tf/src/experiments_outputs/mlruns
+
+hydra:
+   run:
+      dir: ./tf/src/experiments_outputs/${now:%Y_%m_%d_%H_%M_%S}

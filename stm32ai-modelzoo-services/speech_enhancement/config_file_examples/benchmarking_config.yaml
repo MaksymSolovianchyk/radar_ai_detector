@@ -1,0 +1,30 @@
+general:
+  project_name: speech_enhancement_project
+  logs_dir: logs
+  saved_models_dir: saved_models 
+  gpu_memory_limit: 0.5 # Fraction of GPU's memory to use.
+  display_figures: True # Set to True to display figures. Figures are saved even if set to False.
+
+operation_mode: benchmarking
+
+model:
+  model_name: STFTTCNN # For training
+  state_dict_path: # For training and evaluating torch models
+  model_path: ../../stm32ai-modelzoo/speech_enhancement/stft_tcnn/ST_pretrainedmodel_public_dataset/valentini/stft_tcnn_medium_sigmoid_257x40_qdq_int8.onnx # For quantization, evaluation, benchmarking and deployment only
+
+tools:
+  stedgeai:
+    optimization: balanced
+    on_cloud: True
+    path_to_stedgeai: C:/ST/STEdgeAI/<x.y>/Utilities/windows/stedgeai.exe
+  path_to_cubeIDE: C:/ST/STM32CubeIDE_<*.*.*>/STM32CubeIDE/stm32cubeide.exe
+
+benchmarking:
+  board: STM32N6570-DK
+
+mlflow:
+  uri: ./pt/src/experiment_outputs/mlruns
+
+hydra:
+  run:
+    dir: ./pt/src/experiment_outputs/${now:%Y_%m_%d_%H_%M_%S}
