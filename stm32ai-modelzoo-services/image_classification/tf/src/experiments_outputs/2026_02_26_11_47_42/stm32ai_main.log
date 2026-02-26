@@ -1,3 +1,0 @@
-operation_mode: training
-Dataset : custom_dataset
-Model name : mobilenetv2_a035
