@@ -1,0 +1,32 @@
+model:
+  model_path: ../../stm32ai-modelzoo/image_classification/mobilenetv2/ST_pretrainedmodel_public_dataset/tf_flowers/mobilenetv2_a035_128_fft/mobilenetv2_a035_128_fft_int8.tflite
+operation_mode: deployment
+dataset:
+  dataset_name: tf_flowers
+  class_names:
+  - daisy
+  - dandelion
+  - roses
+  - sunflowers
+  - tulips
+  classes_file_path: ./datasets/labels_tf_flowers.txt
+preprocessing:
+  resizing:
+    interpolation: bilinear
+    aspect_ratio: crop
+  color_mode: rgb
+tools:
+  stedgeai:
+    optimization: balanced
+    on_cloud: false
+    path_to_stedgeai: /Applications/ST/STEdgeAI/3.0/Utilities/mac/stedgeai
+  path_to_cubeIDE: /Applications/STM32CubeIDE.app/Contents/MacOS/STM32CubeIDE
+deployment:
+  c_project_path: ../application_code/image_classification/STM32N6/
+  IDE: GCC
+  verbosity: 1
+  hardware_setup:
+    serie: STM32N6
+    board: STM32N6570-DK
+mlflow:
+  uri: ./tf/src/experiments_outputs/mlruns

@@ -1,0 +1,15 @@
+artifact_uri: /Users/maksym.solovianchyk/Documents/Graduation Internship/stm32ai-modelzoo-services/image_classification/tf/src/experiments_outputs/mlruns/666298751993805086/db89e92361694615b0958299f92aaac9/artifacts
+end_time: 1771924008402
+entry_point_name: ''
+experiment_id: '666298751993805086'
+lifecycle_stage: active
+run_id: db89e92361694615b0958299f92aaac9
+run_name: '2026_02_24_10_06_23'
+run_uuid: db89e92361694615b0958299f92aaac9
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1771923983783
+status: 3
+tags: []
+user_id: maksym.solovianchyk
