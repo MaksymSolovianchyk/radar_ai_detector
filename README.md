@@ -1,3 +1,4 @@
+## REPOSITORY STRUCTURE
 ### stm32ai-modelzoo-services/
 Official STMicroelectronics repository used for:
 	•	Training AI models
