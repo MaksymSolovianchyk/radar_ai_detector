@@ -13,4 +13,4 @@
 | ADC_RESET | 12 | RESET (PB3) | Lets MCU reset/sync the ADC. (Using PB3 is convenient; a normal GPIO also works.) |
 
 ![STMod+ Connector Pinout](/docs/img/stmod_connector_pinout.png)
-![Radar Sensor Pinout](/docs/img/radar_pinout.jpg)
+![Radar Sensor Pinout](/docs/img/radar_pinout.png)
