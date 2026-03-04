@@ -11,6 +11,8 @@
 | ADC_SPI_CS1 | 1 | SPI5_CS (PA3 -> Gpio Output)| Chip select |
 | ADC_DRDY | 11 | INT (PC11 -> GPIO_EXTI11) | Data ready interrupt from ADC → MCU (best practice for sampling) |
 | ADC_RESET | 12 | RESET (PB3 -> Gpio Output) | Lets MCU reset/sync the ADC. (Using PB3 is convenient; a normal GPIO also works.) |
+| EN_RADAR| 17 | GPIO (PD13 -> Gpio Output) | Switch off radar in pulse mode |
+
 
 ![STMod+ Connector Pinout](/docs/img/stmod_connector_pinout.png)
 ![Radar Sensor Pinout](/docs/img/radar_pinout.png)
