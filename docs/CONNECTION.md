@@ -12,5 +12,5 @@
 | ADC_DRDY | 11 | INT (PC11) | Data ready interrupt from ADC → MCU (best practice for sampling) |
 | ADC_RESET | 12 | RESET (PB3) | Lets MCU reset/sync the ADC. (Using PB3 is convenient; a normal GPIO also works.) |
 
-![STMod+ Connector Pinout](img/stmod_connector_pinout.jpg)
-![Radar Sensor Pinout](img/radar_pinout.jpg)
+![STMod+ Connector Pinout](docs/img/stmod_connector_pinout.jpg)
+![Radar Sensor Pinout](docs/img/radar_pinout.jpg)
