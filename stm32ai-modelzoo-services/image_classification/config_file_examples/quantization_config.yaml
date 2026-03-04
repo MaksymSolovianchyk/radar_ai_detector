@@ -1,11 +1,10 @@
 model:
-   model_path: ../../stm32ai-modelzoo/image_classification/mobilenetv2/ST_pretrainedmodel_public_dataset/tf_flowers/mobilenetv2_a035_128_fft/mobilenetv2_a035_128_fft.keras
-
+   model_path: ../../stm32ai-modelzoo-services/image_classification/tf/src/experiments_outputs/2026_02_26_11_47_42/saved_models/best_model.keras
 operation_mode: quantization
 
 dataset:
-  dataset_name: tf_flowers
-  quantization_path: ./datasets/flower_photos/quant
+  dataset_name: custom_dataset
+  quantization_path: /Users/maksym.solovianchyk/Downloads/vehicle-10
 
 preprocessing:
    rescaling:
@@ -20,7 +19,7 @@ quantization:
    quantizer: TFlite_converter
    quantization_type: PTQ
    quantization_input_type: uint8
-   quantization_output_type: float
+   quantization_output_type: int8
    export_dir: quantized_models
 
 mlflow:

@@ -1,13 +1,17 @@
 model:
   # path to a `.tflite` or `.onnx` file.
+
   model_path: ../../stm32ai-modelzoo/image_classification/mobilenetv2/ST_pretrainedmodel_public_dataset/tf_flowers/mobilenetv2_a035_128_fft/mobilenetv2_a035_128_fft_int8.tflite
 operation_mode: deployment
 
 dataset:
+  #dataset_name: custom_dataset
+  #class_names: [bicycle, car]
+  #classes_file_path: ./datasets/labels_tf_cars.txt
   dataset_name: tf_flowers
   class_names: [daisy, dandelion, roses, sunflowers, tulips]
   classes_file_path: ./datasets/labels_tf_flowers.txt
-
+  
 preprocessing:
   resizing:
     interpolation: bilinear

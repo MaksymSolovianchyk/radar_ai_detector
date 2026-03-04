@@ -2,8 +2,7 @@ operation_mode: deployment
 
 model:
   model_type: yolov11n
-  model_path: https://github.com/stm32-hotspot/ultralytics/raw/refs/heads/main/examples/YOLOv8-STEdgeAI/stedgeai_models/object_detection/yolo11/yolo11n_256_quant_pc_uf_od_coco-person-st.tflite
-
+  model_path: ../../ultralytics/examples/YOLOv8-STEdgeAI/stedgeai_models/object_detection/yolo11/yolo11n_256_quant_pc_uf_od_coco-person-st.tflite
 dataset:
   class_names: [person]
 
@@ -23,8 +22,8 @@ tools:
   stedgeai:
     optimization: balanced
     on_cloud: False
-    path_to_stedgeai: C:/ST/STEdgeAI/3.0/Utilities/windows/stedgeai.exe
-  path_to_cubeIDE: C:/ST/STM32CubeIDE_1.17.0/STM32CubeIDE/stm32cubeide.exe
+    path_to_stedgeai: /Applications/ST/STEdgeAI/3.0/Utilities/mac/stedgeai
+  path_to_cubeIDE: /Applications/STM32CubeIDE.app/Contents/MacOS/STM32CubeIDE
 
 deployment:
   c_project_path: ../application_code/object_detection/STM32N6/
