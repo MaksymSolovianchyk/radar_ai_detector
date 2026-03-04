@@ -9,6 +9,7 @@ __pycache__/
 *.pyo
 
 # macOS
+.idea/
 .DS_Store
 
 # STM / ML outputs
