@@ -1,5 +1,5 @@
 ### TRAINING TUTORIAL
-This tutorial provides shorter and already evaluated information, that can also be found in the
+This tutorial provides shorter and already evaluated information, which can also be found in the
 ```
 stm32ai-modelzoo-services/
   image_classification/
