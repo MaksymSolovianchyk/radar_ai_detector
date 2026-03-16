@@ -1,0 +1,8 @@
+../Core/Src/radar.c:51:6:ADS_Init	64	static
+../Core/Src/radar.c:63:6:ResetTXBuffer	16	static
+../Core/Src/radar.c:67:6:DrdyPulseCallback	4	static
+../Core/Src/radar.c:72:6:DrdyExti	8	static
+../Core/Src/radar.c:81:6:BuffMemCopy	8	static
+../Core/Src/radar.c:85:6:UartStartSend	8	static
+../Core/Src/radar.c:96:6:UartStartReceive	8	static
+../Core/Src/radar.c:100:6:UartRxcallback	4	static

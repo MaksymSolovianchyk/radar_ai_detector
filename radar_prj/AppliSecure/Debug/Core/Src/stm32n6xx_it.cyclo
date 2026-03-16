@@ -1,0 +1,17 @@
+../Core/Src/stm32n6xx_it.c:79:6:NMI_Handler	1
+../Core/Src/stm32n6xx_it.c:94:6:HardFault_Handler	1
+../Core/Src/stm32n6xx_it.c:109:6:MemManage_Handler	1
+../Core/Src/stm32n6xx_it.c:124:6:BusFault_Handler	1
+../Core/Src/stm32n6xx_it.c:139:6:UsageFault_Handler	1
+../Core/Src/stm32n6xx_it.c:154:6:SecureFault_Handler	1
+../Core/Src/stm32n6xx_it.c:169:6:SVC_Handler	1
+../Core/Src/stm32n6xx_it.c:182:6:DebugMon_Handler	1
+../Core/Src/stm32n6xx_it.c:195:6:PendSV_Handler	1
+../Core/Src/stm32n6xx_it.c:208:6:SysTick_Handler	1
+../Core/Src/stm32n6xx_it.c:229:6:EXTI11_IRQHandler	2
+../Core/Src/stm32n6xx_it.c:251:6:GPDMA1_Channel0_IRQHandler	1
+../Core/Src/stm32n6xx_it.c:267:6:GPDMA1_Channel1_IRQHandler	1
+../Core/Src/stm32n6xx_it.c:281:6:GPDMA1_Channel2_IRQHandler	1
+../Core/Src/stm32n6xx_it.c:296:6:GPDMA1_Channel3_IRQHandler	1
+../Core/Src/stm32n6xx_it.c:310:6:SPI5_IRQHandler	1
+../Core/Src/stm32n6xx_it.c:324:6:USART1_IRQHandler	1

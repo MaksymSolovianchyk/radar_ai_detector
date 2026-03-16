@@ -1,0 +1,15 @@
+../../Drivers/STM32N6xx_HAL_Driver/Inc/stm32n6xx_ll_bus.h:879:22:LL_AHB1_GRP1_EnableClock	1
+../../Drivers/STM32N6xx_HAL_Driver/Inc/stm32n6xx_ll_bus.h:1165:22:LL_AHB3_GRP1_EnableClock	1
+../../Drivers/STM32N6xx_HAL_Driver/Inc/stm32n6xx_ll_bus.h:1407:22:LL_AHB4_GRP1_EnableClock	1
+../Core/Src/main.c:90:5:main	3
+../Core/Src/main.c:176:13:NonSecure_Init	1
+../Core/Src/main.c:197:13:MX_GPDMA1_Init	1
+../Core/Src/main.c:231:13:MX_SPI5_Init	2
+../Core/Src/main.c:279:13:MX_USART1_UART_Init	5
+../Core/Src/main.c:327:13:MX_GPIO_Init	1
+../Core/Src/main.c:395:15:SystemIsolation_Config	5
+../Core/Src/main.c:439:6:HAL_GPIO_EXTI_Callback	1
+../Core/Src/main.c:447:6:HAL_SPI_TxCpltCallback	2
+../Core/Src/main.c:455:6:Test_CS_Toggle	2
+../Core/Src/main.c:497:6:Test_MISO	5
+../Core/Src/main.c:580:6:Error_Handler	1
