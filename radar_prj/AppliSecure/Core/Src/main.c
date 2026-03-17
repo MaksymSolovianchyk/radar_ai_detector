@@ -135,18 +135,11 @@ int main(void)
   {
 	  if (adc_data_ready) {
 	          adc_data_ready = false;
-	          uint8_t packet[8];
-	          packet[0] = ADC_Buffer.rx[3];  // CH0 MSB
-	          packet[1] = ADC_Buffer.rx[4];  // CH0 MID
-	          packet[2] = ADC_Buffer.rx[5];  // CH0 LSB
-	          packet[3] = ADC_Buffer.rx[6];  // CH1 MSB
-	          packet[4] = ADC_Buffer.rx[7];  // CH1 MID
-	          packet[5] = ADC_Buffer.rx[8];  // CH1 LSB
-	          packet[6] = '\r';
-	          packet[7] = '\n';
-
-	          HAL_UART_Transmit(&huart1, packet, 8, HAL_MAX_DELAY);
-	          //BuffMemCopy();
+	          char msg[80];
+	              sprintf(msg, "DATA: %02X %02X %02X %02X %02X %02X\r\n",
+	                  ADC_Buffer.rx[3], ADC_Buffer.rx[4], ADC_Buffer.rx[5],
+	                  ADC_Buffer.rx[6], ADC_Buffer.rx[7], ADC_Buffer.rx[8]);
+	              HAL_UART_Transmit(&huart1, (uint8_t*)msg, strlen(msg), HAL_MAX_DELAY);
 	          memset(UartTxBuff, 0, 8);
 	  }
 	  if (commandflag) {
