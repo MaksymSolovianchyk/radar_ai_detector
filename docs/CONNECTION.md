@@ -13,6 +13,8 @@
 | ADC_RESET | 12 | RESET (PB3 -> Gpio Output) | Lets MCU reset/sync the ADC. (Using PB3 is convenient; a normal GPIO also works.) |
 | EN_RADAR| 13 | GPIO (PC9 -> Gpio Output) | Switch off radar in pulse mode |
 
+### To enable SPI5 on STMod+, follow this physical configuration
+![STMod+ Connector Mode](/docs/img/stmod_mode.png)
 
 ![STMod+ Connector Pinout](/docs/img/stmod_connector_pinout.png)
 ![Radar Sensor Pinout](/docs/img/radar_pinout.png)
