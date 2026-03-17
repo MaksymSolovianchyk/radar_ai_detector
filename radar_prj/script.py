@@ -1,212 +1,266 @@
-# Static FFT + Spectrogram capture script
-# Based on FFT+controls+magnitude.py from radar_prj
+# Live FFT + Spectrogram
+# Based on static_fft.py and FFT+controls+magnitude.py from radar_prj
 # STM32 sends: "DATA: XX XX XX XX XX XX\r\n" (ASCII hex)
 #
-# Panels produced:
-#   1. Time domain  (I and Q waveforms)
-#   2. Single FFT slice  (Hamming window, centred at 0 Hz)
-#   3. Spectrogram / waterfall  (STFT, frequency × time, inferno colormap)
-#      – same style as the live waterfall in the main script
+# Panels:
+#   1. Time domain  (rolling window)
+#   2. Single FFT slice  (Hamming, centred at 0 Hz)
+#   3. Spectrogram / waterfall  (STFT, scrolling upward like the live script)
 
 import re
+import threading
+import time
 import serial
 import numpy as np
+
+import matplotlib
+# Opens a real detached OS window.
+# Requires tkinter — install if missing:
+#   macOS:   brew install python-tk
+#   Ubuntu:  sudo apt install python3-tk
+# Swap "TkAgg" → "Qt5Agg" if you have PyQt5 instead.
+matplotlib.use("TkAgg")
+
 import matplotlib.pyplot as plt
-import matplotlib.colors as mcolors
+import matplotlib.animation as animation
+from matplotlib.widgets import Slider
 
 # ── Config ────────────────────────────────────────────────────────────────────
 PORT          = "/dev/tty.usbmodem1102"   # adjust to your port
 BAUDRATE      = 576000
 
-# Total samples to collect.  More samples = taller / higher-res spectrogram.
-# Must be >= FFT_LEN.  e.g. 8192 gives ~8 rows of 1024-pt FFTs.
-N_SAMPLES     = 8192
-
-FFT_LEN       = 1024     # points per FFT slice (also used for the single FFT panel)
-HOP           = 256      # step between successive STFT frames (overlap = FFT_LEN - HOP)
-
+BUFFER_SIZE   = 8192     # total rolling sample buffer
+FFT_LEN       = 1024     # points per FFT / STFT frame
+HOP           = 256      # STFT hop size (samples between frames)
 SAMPLING_RATE = 3904     # Hz
 FSR           = 0.15     # full-scale range (V)
 STEP          = FSR / (2**23)
 EPSILON       = 1e-12
 
-# Spectrogram colour limits (dB, normalised to 0 dB peak of the whole capture)
-CLIM_MIN      = -60.0
-CLIM_MAX      =   0.0
+# How many STFT rows to keep in the waterfall
+WATERFALL_ROWS = 100
+
+# Animation update interval (ms) — lower = smoother but heavier CPU
+UPDATE_MS = 80
+# ──────────────────────────────────────────────────────────────────────────────
+
+# ── Shared state ──────────────────────────────────────────────────────────────
+i_buf      = np.zeros(BUFFER_SIZE)
+q_buf      = np.zeros(BUFFER_SIZE)
+write_idx  = 0
+buf_lock   = threading.Lock()
+
+# Waterfall buffer: rows × FFT_LEN
+waterfall  = np.full((WATERFALL_ROWS, FFT_LEN), -120.0)
+wf_lock    = threading.Lock()
+
+doppler_info = {"fd": 0.0, "v": 0.0, "direction": "—"}
 # ──────────────────────────────────────────────────────────────────────────────
 
 
 def bytes_to_int24(b0, b1, b2):
-    """Three individual byte values → signed 24-bit integer."""
     val = (b0 << 16) | (b1 << 8) | b2
     if val & 0x800000:
         val -= 1 << 24
     return val
 
 
-def collect_samples(port, baud, n_samples):
-    """Read ASCII hex lines from STM32 until n_samples are collected."""
-    ch1, ch2 = [], []
+# ── Serial reader thread ──────────────────────────────────────────────────────
+def reader_thread():
+    global write_idx
     pattern = re.compile(
         r"DATA:\s+([0-9A-Fa-f]{2})\s+([0-9A-Fa-f]{2})\s+([0-9A-Fa-f]{2})"
         r"\s+([0-9A-Fa-f]{2})\s+([0-9A-Fa-f]{2})\s+([0-9A-Fa-f]{2})"
     )
-    print(f"Opening {port} @ {baud} baud …")
-    with serial.Serial(port, baud, timeout=2) as ser:
-        ser.reset_input_buffer()
-        print(f"Collecting {n_samples} samples …")
-        while len(ch1) < n_samples:
-            raw = ser.readline()
-            if not raw:
-                continue
-            try:
-                line = raw.decode("ascii", errors="ignore").strip()
-            except Exception:
-                continue
-            m = pattern.search(line)
-            if m:
-                b = [int(x, 16) for x in m.groups()]
-                ch1.append(bytes_to_int24(b[0], b[1], b[2]) * STEP)   # CH0 → I
-                ch2.append(bytes_to_int24(b[3], b[4], b[5]) * STEP)   # CH1 → Q
-                if len(ch1) % 256 == 0:
-                    print(f"  {len(ch1)}/{n_samples}")
-    print("Done collecting.")
-    return np.array(ch1), np.array(ch2)
+    leftover = b""
+    while True:
+        try:
+            ser = serial.Serial(PORT, BAUDRATE, timeout=1)
+            ser.reset_input_buffer()
+            print(f"Serial opened: {PORT}")
+            while True:
+                raw = ser.readline()
+                if not raw:
+                    continue
+                line = (leftover + raw).decode("ascii", errors="ignore").strip()
+                leftover = b""
+                m = pattern.search(line)
+                if m:
+                    b = [int(x, 16) for x in m.groups()]
+                    i_val = bytes_to_int24(b[0], b[1], b[2]) * STEP
+                    q_val = bytes_to_int24(b[3], b[4], b[5]) * STEP
+                    with buf_lock:
+                        i_buf[write_idx] = i_val
+                        q_buf[write_idx] = q_val
+                        write_idx = (write_idx + 1) % BUFFER_SIZE
+        except serial.SerialException as e:
+            print(f"Serial error: {e}  — retrying in 2 s")
+            time.sleep(2)
 
 
-def compute_fft(i_data, q_data, n=None):
-    """Single complex FFT with Hamming window → (freqs Hz, magnitude dB)."""
-    if n is None:
-        n = len(i_data)
-    win = np.hamming(n)
-    sig = (i_data[:n] + 1j * q_data[:n]) * win
-    spectrum = np.fft.fftshift(np.fft.fft(sig, n=n))
-    mag = np.abs(spectrum) + EPSILON
-    mag_db = 20.0 * np.log10(mag / (np.max(mag) + EPSILON))
-    freqs = np.linspace(-SAMPLING_RATE / 2, SAMPLING_RATE / 2, n)
-    return freqs, mag_db
+# ── FFT / STFT worker thread ──────────────────────────────────────────────────
+def fft_thread():
+    win = np.hamming(FFT_LEN)
+    while True:
+        with buf_lock:
+            idx = np.arange(write_idx - BUFFER_SIZE, write_idx) % BUFFER_SIZE
+            i_snap = i_buf[idx].copy()
+            q_snap = q_buf[idx].copy()
+
+        # Single FFT on the most recent FFT_LEN samples
+        seg_i = i_snap[-FFT_LEN:]
+        seg_q = q_snap[-FFT_LEN:]
+        sig   = (seg_i + 1j * seg_q) * win
+        spec  = np.fft.fftshift(np.fft.fft(sig, n=FFT_LEN))
+        mag   = np.abs(spec) + EPSILON
+        fft_db = np.clip(20.0 * np.log10(mag / (np.max(mag) + EPSILON)), -120.0, 0.0)
+
+        # STFT over the whole buffer to fill the waterfall
+        new_rows = []
+        global_max = 1.0   # will be updated below
+        frames_mag = []
+        for s in range(0, BUFFER_SIZE - FFT_LEN + 1, HOP):
+            frame = (i_snap[s:s + FFT_LEN] + 1j * q_snap[s:s + FFT_LEN]) * win
+            fm    = np.abs(np.fft.fftshift(np.fft.fft(frame, n=FFT_LEN))) + EPSILON
+            frames_mag.append(fm)
+        if frames_mag:
+            all_mag   = np.array(frames_mag)
+            global_max = np.max(all_mag)
+            rows_db   = np.clip(20.0 * np.log10(all_mag / global_max), -120.0, 0.0)
+            # Keep only the last WATERFALL_ROWS rows
+            keep = rows_db[-WATERFALL_ROWS:]
+            n_keep = keep.shape[0]
+            with wf_lock:
+                waterfall[-n_keep:] = keep
+                if n_keep < WATERFALL_ROWS:
+                    waterfall[:-n_keep] = -120.0
+
+        # Doppler estimate via instantaneous frequency
+        sig_raw  = i_snap[-FFT_LEN:] + 1j * q_snap[-FFT_LEN:]
+        phase    = np.unwrap(np.angle(sig_raw))
+        dphase   = np.diff(phase)
+        fd       = float(np.median((dphase / (2.0 * np.pi)) * SAMPLING_RATE))
+        v        = (fd * 3e8) / (2.0 * 24e9)
+        direction = "approaching" if fd > 0 else ("receding" if fd < 0 else "stationary")
+        doppler_info.update({"fd": fd, "v": v, "direction": direction, "fft_db": fft_db})
+
+        time.sleep(UPDATE_MS / 1000.0 * 0.5)   # run ~2× faster than display
 
 
-def compute_spectrogram(i_data, q_data, fft_len, hop):
-    """
-    Short-time Fourier transform of the complex IQ signal.
-    Returns:
-        freqs  – 1-D array of centre frequencies (Hz), 0-centred
-        times  – 1-D array of frame centre times (s)
-        sxx_db – 2-D array [n_frames × fft_len] in dB (normalised to global peak)
-    """
-    n_total = len(i_data)
-    win = np.hamming(fft_len)
-    frames = []
-    starts = range(0, n_total - fft_len + 1, hop)
-    for s in starts:
-        seg = (i_data[s:s + fft_len] + 1j * q_data[s:s + fft_len]) * win
-        spectrum = np.fft.fftshift(np.fft.fft(seg, n=fft_len))
-        frames.append(np.abs(spectrum) + EPSILON)
+# ── Build figure ──────────────────────────────────────────────────────────────
+fig = plt.figure(figsize=(13, 11))
+fig.suptitle("Live FFT + Spectrogram", fontsize=12)
 
-    sxx = np.array(frames)                         # [n_frames, fft_len]
-    global_max = np.max(sxx)
-    sxx_db = 20.0 * np.log10(sxx / global_max)
-    sxx_db = np.clip(sxx_db, -120.0, 0.0)
+# Leave room at bottom for sliders
+plt.subplots_adjust(left=0.08, right=0.93, top=0.93, bottom=0.18, hspace=0.40)
 
-    freqs = np.linspace(-SAMPLING_RATE / 2, SAMPLING_RATE / 2, fft_len)
-    # Centre time of each frame (seconds)
-    times = np.array([s + fft_len // 2 for s in starts]) / SAMPLING_RATE
-    return freqs, times, sxx_db
+gs = fig.add_gridspec(3, 2, width_ratios=[1, 0.025],
+                      hspace=0.40, wspace=0.06,
+                      top=0.93, bottom=0.18,
+                      left=0.08, right=0.93)
+ax_t  = fig.add_subplot(gs[0, 0])
+ax_f  = fig.add_subplot(gs[1, 0])
+ax_sg = fig.add_subplot(gs[2, 0])
+ax_cb = fig.add_subplot(gs[2, 1])
+
+freqs = np.linspace(-SAMPLING_RATE / 2, SAMPLING_RATE / 2, FFT_LEN)
+t_ms  = np.arange(BUFFER_SIZE) / SAMPLING_RATE * 1000   # full buffer timeline
+
+# Time domain
+line_i, = ax_t.plot(t_ms, np.zeros(BUFFER_SIZE), lw=0.7, label="CH0 (I)")
+line_q, = ax_t.plot(t_ms, np.zeros(BUFFER_SIZE), lw=0.7, label="CH1 (Q)", alpha=0.8)
+ax_t.set_xlim(0, t_ms[-1])
+ax_t.set_ylim(-FSR, FSR)
+ax_t.set_xlabel("Time (ms)")
+ax_t.set_ylabel("Amplitude (V)")
+ax_t.set_title("Time domain  (rolling)")
+ax_t.legend(fontsize=8, loc="upper right")
+ax_t.grid(True, alpha=0.25)
+
+# FFT slice
+line_fft, = ax_f.plot(freqs, np.full(FFT_LEN, -120.0), color="gold", lw=0.9)
+vline_peak = ax_f.axvline(0, color="red", lw=0.9, linestyle="--")
+ax_f.set_xlim(-SAMPLING_RATE / 2, SAMPLING_RATE / 2)
+ax_f.set_ylim(-80, 5)
+ax_f.set_xlabel("Frequency (Hz)")
+ax_f.set_ylabel("Magnitude (dB)")
+ax_f.set_title(f"FFT slice  (Hamming, N={FFT_LEN})")
+ax_f.grid(True, alpha=0.25)
+peak_label = ax_f.text(0.02, 0.93, "", transform=ax_f.transAxes,
+                       fontsize=8, color="red")
+
+# Spectrogram
+im = ax_sg.imshow(
+    waterfall,
+    aspect="auto",
+    origin="lower",
+    extent=[-SAMPLING_RATE / 2, SAMPLING_RATE / 2, 0, WATERFALL_ROWS],
+    cmap="inferno",
+    vmin=-60, vmax=0,
+    interpolation="nearest",
+)
+ax_sg.set_xlabel("Frequency (Hz)")
+ax_sg.set_ylabel("Frame index (oldest → newest)")
+ax_sg.set_title(f"Spectrogram  (STFT hop={HOP})")
+ax_sg.set_xlim(-SAMPLING_RATE / 2, SAMPLING_RATE / 2)
+fig.colorbar(im, cax=ax_cb, label="dB")
+
+# Info text
+info_text = fig.text(0.5, 0.13, "", ha="center", fontsize=10,
+                     bbox=dict(facecolor="lightyellow", alpha=0.85,
+                               boxstyle="round,pad=0.3"))
+
+# ── Sliders ───────────────────────────────────────────────────────────────────
+ax_sl_min = plt.axes([0.10, 0.07, 0.70, 0.025])
+ax_sl_max = plt.axes([0.10, 0.03, 0.70, 0.025])
+sl_min = Slider(ax_sl_min, "cmin (dB)", -120, 0, valinit=-90,  valstep=1)
+sl_max = Slider(ax_sl_max, "cmax (dB)", -120, 0, valinit=0,    valstep=1)
+
+def on_slider(_):
+    im.set_clim(sl_min.val, sl_max.val)
+
+sl_min.on_changed(on_slider)
+sl_max.on_changed(on_slider)
 
 
-def doppler_estimate(i_data, q_data):
-    sig   = i_data + 1j * q_data
-    phase = np.unwrap(np.angle(sig))
-    dphase = np.diff(phase)
-    fd = np.median((dphase / (2.0 * np.pi)) * SAMPLING_RATE)
-    v  = (fd * 3e8) / (2.0 * 24e9)
-    direction = "approaching" if fd > 0 else ("receding" if fd < 0 else "stationary")
-    return fd, v, direction
+# ── Animation update ──────────────────────────────────────────────────────────
+def update(_frame):
+    with buf_lock:
+        idx   = np.arange(write_idx - BUFFER_SIZE, write_idx) % BUFFER_SIZE
+        i_out = i_buf[idx].copy()
+        q_out = q_buf[idx].copy()
 
+    # Time domain
+    line_i.set_ydata(i_out)
+    line_q.set_ydata(q_out)
 
-def plot(i_data, q_data):
-    freqs_fft, mag_db = compute_fft(i_data, q_data, n=FFT_LEN)
-    freqs_sg, times_sg, sxx_db = compute_spectrogram(i_data, q_data, FFT_LEN, HOP)
-    fd, v, direction = doppler_estimate(i_data, q_data)
+    # FFT slice
+    fft_db = doppler_info.get("fft_db", np.full(FFT_LEN, -120.0))
+    line_fft.set_ydata(fft_db)
+    pk_idx  = int(np.argmax(fft_db))
+    pk_freq = freqs[pk_idx]
+    vline_peak.set_xdata([pk_freq, pk_freq])
+    peak_label.set_text(f"Peak  {pk_freq:.1f} Hz")
 
-    fig = plt.figure(figsize=(13, 11))
-    fig.suptitle(
-        f"Static capture  –  {N_SAMPLES} samples @ {SAMPLING_RATE} Hz"
-        f"  |  FFT N={FFT_LEN}  hop={HOP}",
-        fontsize=12
+    # Spectrogram
+    with wf_lock:
+        im.set_data(waterfall.copy())
+
+    # Info banner
+    fd  = doppler_info.get("fd", 0.0)
+    v   = doppler_info.get("v",  0.0)
+    drn = doppler_info.get("direction", "—")
+    info_text.set_text(
+        f"fd = {fd:.2f} Hz  |  v ≈ {v:.4f} m/s  |  {drn}"
+        f"  |  colour [{sl_min.val:.0f}, {sl_max.val:.0f}] dB"
     )
 
-    gs = fig.add_gridspec(3, 2, width_ratios=[1, 0.03],
-                          hspace=0.40, wspace=0.08)
-    ax_t  = fig.add_subplot(gs[0, 0])
-    ax_f  = fig.add_subplot(gs[1, 0])
-    ax_sg = fig.add_subplot(gs[2, 0])
-    ax_cb = fig.add_subplot(gs[2, 1])   # colourbar axis
-
-    # ── 1. Time domain ───────────────────────────────────────────────────────
-    t_ms = np.arange(len(i_data)) / SAMPLING_RATE * 1000
-    ax_t.plot(t_ms, i_data, linewidth=0.7, label="CH0 (I)")
-    ax_t.plot(t_ms, q_data, linewidth=0.7, label="CH1 (Q)", alpha=0.8)
-    ax_t.set_xlabel("Time (ms)")
-    ax_t.set_ylabel("Amplitude (V)")
-    ax_t.set_title("Time domain")
-    ax_t.legend(fontsize=8)
-    ax_t.grid(True, alpha=0.25)
-
-    # ── 2. Single FFT slice ──────────────────────────────────────────────────
-    ax_f.plot(freqs_fft, mag_db, color="gold", linewidth=0.9)
-    ax_f.set_xlabel("Frequency (Hz)")
-    ax_f.set_ylabel("Magnitude (dB)")
-    ax_f.set_title(f"Single FFT slice  (Hamming, N={FFT_LEN})")
-    ax_f.set_xlim(-SAMPLING_RATE / 2, SAMPLING_RATE / 2)
-    ax_f.set_ylim(-80, 5)
-    ax_f.grid(True, alpha=0.25)
-    # peak marker
-    pk_idx  = np.argmax(mag_db)
-    pk_freq = freqs_fft[pk_idx]
-    ax_f.axvline(pk_freq, color="red", linestyle="--", linewidth=0.9,
-                 label=f"Peak {pk_freq:.1f} Hz")
-    ax_f.legend(fontsize=8)
-
-    # ── 3. Spectrogram / waterfall ───────────────────────────────────────────
-    # extent: [freq_min, freq_max, time_min, time_max]  (time in ms for readability)
-    t_min_ms = times_sg[0]  * 1000
-    t_max_ms = times_sg[-1] * 1000
-    f_min    = freqs_sg[0]
-    f_max    = freqs_sg[-1]
-
-    im = ax_sg.imshow(
-        sxx_db,                          # [n_frames × fft_len]
-        aspect="auto",
-        origin="lower",
-        extent=[f_min, f_max, t_min_ms, t_max_ms],
-        cmap="inferno",
-        vmin=CLIM_MIN,
-        vmax=CLIM_MAX,
-        interpolation="nearest",
-    )
-    ax_sg.set_xlabel("Frequency (Hz)")
-    ax_sg.set_ylabel("Time (ms)")
-    ax_sg.set_title(f"Spectrogram  (STFT, hop={HOP} samples = {HOP/SAMPLING_RATE*1000:.1f} ms)")
-    ax_sg.set_xlim(-SAMPLING_RATE / 2, SAMPLING_RATE / 2)
-
-    # Colourbar
-    cb = fig.colorbar(im, cax=ax_cb)
-    cb.set_label("Power (dB)", fontsize=8)
-
-    # ── Doppler info banner ───────────────────────────────────────────────────
-    info = (f"Doppler  fd = {fd:.2f} Hz  |  v ≈ {v:.4f} m/s  |  {direction}"
-            f"  |  colour range [{CLIM_MIN}, {CLIM_MAX}] dB")
-    fig.text(0.5, 0.005, info, ha="center", fontsize=10,
-             bbox=dict(facecolor="lightyellow", alpha=0.85, boxstyle="round,pad=0.3"))
-
-    plt.savefig("static_fft.png", dpi=150, bbox_inches="tight")
-    print("Saved  static_fft.png")
-    plt.show()
+    return line_i, line_q, line_fft, vline_peak, peak_label, im, info_text
 
 
-if __name__ == "__main__":
-    i_data, q_data = collect_samples(PORT, BAUDRATE, N_SAMPLES)
-    plot(i_data, q_data)
+# ── Start threads and animation ───────────────────────────────────────────────
+threading.Thread(target=reader_thread, daemon=True).start()
+threading.Thread(target=fft_thread,    daemon=True).start()
 
+ani = animation.FuncAnimation(fig, update, interval=UPDATE_MS, blit=False, cache_frame_data=False)
+plt.show()
