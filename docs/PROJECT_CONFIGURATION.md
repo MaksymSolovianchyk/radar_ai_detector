@@ -81,8 +81,6 @@ Channel 3
 -	Dest Allocated Port for Transfer: Port 1
 
 ### GPIO Configuration
-  ![GPIO Configuration](/docs/img/gpio_config.png)
-  
 AppliSecure GPIO outputs
 
 PA3
@@ -104,6 +102,8 @@ AppliSecure GPIO interrupt input
 - Signal: GPXTI11
 - Mode: GPIO_MODE_IT_FALLING
 
+ ![GPIO Configuration](/docs/img/gpio_config.png)
+  
 ### NVIC1_S_Application Configuration (NVIC)
 
 AppliSecure interrupts enabled
@@ -119,5 +119,5 @@ AppliSecure interrupts enabled
 To see sensor output in terminal
 `picocom --baud 576000 --parity n --databits 8 --stopbits 1 /dev/tty.usbmodem1102`
 Where /dev/tty.usbmodem1102 is USB/USB-C port on PC
-On macOS `ls /dev/tty.*`
-On Windows `[System.IO.Ports.SerialPort]::getportnames()`
+- On macOS `ls /dev/tty.*`
+- On Windows `[System.IO.Ports.SerialPort]::getportnames()`
