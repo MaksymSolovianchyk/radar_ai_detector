@@ -37,8 +37,10 @@ FSR           = 0.15     # full-scale range (V)
 STEP          = FSR / (2**23)
 EPSILON       = 1e-12
 
-# How many STFT rows to keep in the waterfall
-WATERFALL_ROWS = 100
+# How many STFT rows to show in the waterfall (history depth).
+# Each row = HOP samples = HOP/SAMPLING_RATE seconds.
+# e.g. 200 rows × 256/3904 s ≈ 13 s of history
+WATERFALL_ROWS = 200
 
 # Animation update interval (ms) — lower = smoother but heavier CPU
 UPDATE_MS = 80
@@ -115,25 +117,15 @@ def fft_thread():
         mag   = np.abs(spec) + EPSILON
         fft_db = np.clip(20.0 * np.log10(mag / (np.max(mag) + EPSILON)), -120.0, 0.0)
 
-        # STFT over the whole buffer to fill the waterfall
-        new_rows = []
-        global_max = 1.0   # will be updated below
-        frames_mag = []
-        for s in range(0, BUFFER_SIZE - FFT_LEN + 1, HOP):
-            frame = (i_snap[s:s + FFT_LEN] + 1j * q_snap[s:s + FFT_LEN]) * win
-            fm    = np.abs(np.fft.fftshift(np.fft.fft(frame, n=FFT_LEN))) + EPSILON
-            frames_mag.append(fm)
-        if frames_mag:
-            all_mag   = np.array(frames_mag)
-            global_max = np.max(all_mag)
-            rows_db   = np.clip(20.0 * np.log10(all_mag / global_max), -120.0, 0.0)
-            # Keep only the last WATERFALL_ROWS rows
-            keep = rows_db[-WATERFALL_ROWS:]
-            n_keep = keep.shape[0]
-            with wf_lock:
-                waterfall[-n_keep:] = keep
-                if n_keep < WATERFALL_ROWS:
-                    waterfall[:-n_keep] = -120.0
+        # Compute ONE new STFT row from the most recent FFT_LEN samples,
+        # then scroll the waterfall up (oldest row drops off, newest appended).
+        new_frame  = (i_snap[-FFT_LEN:] + 1j * q_snap[-FFT_LEN:]) * win
+        new_mag    = np.abs(np.fft.fftshift(np.fft.fft(new_frame, n=FFT_LEN))) + EPSILON
+        new_row_db = np.clip(20.0 * np.log10(new_mag / (np.max(new_mag) + EPSILON)),
+                             -120.0, 0.0)
+        with wf_lock:
+            waterfall[:-1] = waterfall[1:]   # scroll up
+            waterfall[-1]  = new_row_db       # newest row at bottom
 
         # Doppler estimate via instantaneous frequency
         sig_raw  = i_snap[-FFT_LEN:] + 1j * q_snap[-FFT_LEN:]
@@ -213,7 +205,7 @@ info_text = fig.text(0.5, 0.13, "", ha="center", fontsize=10,
 # ── Sliders ───────────────────────────────────────────────────────────────────
 ax_sl_min = plt.axes([0.10, 0.07, 0.70, 0.025])
 ax_sl_max = plt.axes([0.10, 0.03, 0.70, 0.025])
-sl_min = Slider(ax_sl_min, "cmin (dB)", -120, 0, valinit=-90,  valstep=1)
+sl_min = Slider(ax_sl_min, "cmin (dB)", -120, 0, valinit=-60,  valstep=1)
 sl_max = Slider(ax_sl_max, "cmax (dB)", -120, 0, valinit=0,    valstep=1)
 
 def on_slider(_):
