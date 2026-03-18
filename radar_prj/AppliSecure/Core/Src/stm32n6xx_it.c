@@ -24,6 +24,9 @@
 /* USER CODE BEGIN Includes */
 #include "ads131m0x.h"
 #include "radar.h"
+#include "fft.h"
+#define FFT_ADC_FSR   0.15f
+#define FFT_ADC_STEP  (FFT_ADC_FSR / 8388608.0f)
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -48,7 +51,12 @@
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN PFP */
-
+static inline float adc_to_float(uint8_t msb, uint8_t mid, uint8_t lsb)
+{
+    int32_t raw = ((int32_t)msb << 16) | ((int32_t)mid << 8) | (int32_t)lsb;
+    if (raw & 0x00800000) raw |= 0xFF000000;
+    return (float)raw * FFT_ADC_STEP;
+}
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -257,6 +265,13 @@ void GPDMA1_Channel0_IRQHandler(void)
   /* USER CODE BEGIN GPDMA1_Channel0_IRQn 1 */
   setCS(HIGH);
   HAL_SPI_AdcCallback();
+  float i_val = adc_to_float(ADC_Buffer.rx[3],
+                                  ADC_Buffer.rx[4],
+                                  ADC_Buffer.rx[5]);
+  float q_val = adc_to_float(ADC_Buffer.rx[6],
+                                  ADC_Buffer.rx[7],
+                                  ADC_Buffer.rx[8]);
+  FFT_PushSample(i_val, q_val);
   adc_data_ready = true;
   /* USER CODE END GPDMA1_Channel0_IRQn 1 */
 }

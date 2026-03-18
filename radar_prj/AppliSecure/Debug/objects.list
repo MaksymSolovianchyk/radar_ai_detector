@@ -1,4 +1,5 @@
 "./Core/Src/ads131m0x.o"
+"./Core/Src/fft.o"
 "./Core/Src/main.o"
 "./Core/Src/radar.o"
 "./Core/Src/secure_nsc.o"

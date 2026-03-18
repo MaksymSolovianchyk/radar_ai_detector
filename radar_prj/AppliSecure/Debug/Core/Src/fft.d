@@ -1,4 +1,4 @@
-Core/Src/stm32n6xx_it.o: ../Core/Src/stm32n6xx_it.c ../Core/Inc/main.h \
+Core/Src/fft.o: ../Core/Src/fft.c ../Core/Inc/fft.h ../Core/Inc/main.h \
  ../../Drivers/STM32N6xx_HAL_Driver/Inc/stm32n6xx_hal.h \
  ../Core/Inc/stm32n6xx_hal_conf.h \
  ../../Drivers/STM32N6xx_HAL_Driver/Inc/stm32n6xx_hal_rcc.h \
@@ -29,8 +29,8 @@ Core/Src/stm32n6xx_it.o: ../Core/Src/stm32n6xx_it.c ../Core/Inc/main.h \
  ../../Drivers/STM32N6xx_HAL_Driver/Inc/stm32n6xx_hal_spi_ex.h \
  ../../Drivers/STM32N6xx_HAL_Driver/Inc/stm32n6xx_hal_uart.h \
  ../../Drivers/STM32N6xx_HAL_Driver/Inc/stm32n6xx_hal_uart_ex.h \
- ../Core/Inc/stm32n6xx_it.h ../Core/Inc/ads131m0x.h ../Core/Inc/radar.h \
- ../Core/Inc/radar.h ../Core/Inc/fft.h
+ ../Core/Inc/arm_math.h ../../Drivers/CMSIS/Include/core_cm7.h
+../Core/Inc/fft.h:
 ../Core/Inc/main.h:
 ../../Drivers/STM32N6xx_HAL_Driver/Inc/stm32n6xx_hal.h:
 ../Core/Inc/stm32n6xx_hal_conf.h:
@@ -62,8 +62,5 @@ Core/Src/stm32n6xx_it.o: ../Core/Src/stm32n6xx_it.c ../Core/Inc/main.h \
 ../../Drivers/STM32N6xx_HAL_Driver/Inc/stm32n6xx_hal_spi_ex.h:
 ../../Drivers/STM32N6xx_HAL_Driver/Inc/stm32n6xx_hal_uart.h:
 ../../Drivers/STM32N6xx_HAL_Driver/Inc/stm32n6xx_hal_uart_ex.h:
-../Core/Inc/stm32n6xx_it.h:
-../Core/Inc/ads131m0x.h:
-../Core/Inc/radar.h:
-../Core/Inc/radar.h:
-../Core/Inc/fft.h:
+../Core/Inc/arm_math.h:
+../../Drivers/CMSIS/Include/core_cm7.h:
