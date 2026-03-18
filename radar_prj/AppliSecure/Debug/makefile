@@ -64,7 +64,7 @@ main-build: radar_prj_AppliSecure.elf secondary-outputs
 
 # Tool invocations
 radar_prj_AppliSecure.elf radar_prj_AppliSecure.map: $(OBJS) $(USER_OBJS) /Users/maksym.solovianchyk/Documents/radar_prj/radar_prj/AppliSecure/STM32N657X0HXQ_LRUN.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "radar_prj_AppliSecure.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m55 -T"/Users/maksym.solovianchyk/Documents/radar_prj/radar_prj/AppliSecure/STM32N657X0HXQ_LRUN.ld" --specs=nosys.specs -Wl,-Map="radar_prj_AppliSecure.map" -Wl,--gc-sections -static -Wl,--cmse-implib -Wl,--out-implib=./secure_nsclib.o --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+	arm-none-eabi-gcc -o "radar_prj_AppliSecure.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m55 -T"/Users/maksym.solovianchyk/Documents/radar_prj/radar_prj/AppliSecure/STM32N657X0HXQ_LRUN.ld" --specs=nosys.specs -Wl,-Map="radar_prj_AppliSecure.map" -Wl,--gc-sections -static -Wl,--cmse-implib -Wl,--out-implib=./secure_nsclib.o -L"/Users/maksym.solovianchyk/Documents/radar_prj/radar_prj/AppliSecure/Lib" -u _printf_float --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
