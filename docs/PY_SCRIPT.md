@@ -57,5 +57,5 @@ A real-time tool for **signal analysis and Doppler estimation** using STM32-acqu
 ---
 
 ## Live FFT on STM32 FFT_SCRIPT.PY
-![Py output2](/docs/img/fft-on-stm1.png)
+![Py output2](/docs/img/ftt-on-stm1.png)
 
