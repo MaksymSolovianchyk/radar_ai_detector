@@ -52,3 +52,10 @@ It displays:
 
 ### Summary
 A real-time tool for **signal analysis and Doppler estimation** using STM32-acquired I/Q data.
+
+---
+---
+
+## Live FFT on STM32 FFT_SCRIPT.PY
+![Py output](/docs/img/fft-on-stm1.png)
+
