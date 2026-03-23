@@ -55,6 +55,7 @@ void ADS_Init(void)
 	char buf[50];
 		if (response == 0x0500){
 			adcready = true;
+			SETDCBLOCK(0x08);
 		}
 	HAL_Delay(1000);
 	}

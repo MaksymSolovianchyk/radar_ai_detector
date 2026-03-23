@@ -18,8 +18,12 @@
 #define VTOR_TABLE_NS_START_ADDR (SRAM2_AXI_BASE_NS | VECT_TAB_NS_OFFSET)
 #define ADC_RESET_Pin            GPIO_PIN_3
 #define ADC_RESET_GPIO_Port      GPIOB
+<<<<<<< Updated upstream
 #define ADC_FSR  0.15f
 #define ADC_STEP (ADC_FSR / 8388608.0f)
+=======
+
+>>>>>>> Stashed changes
 /* USER CODE END PD */
 
 /* Private variables ---------------------------------------------------------*/
@@ -33,6 +37,7 @@ DMA_HandleTypeDef  handle_GPDMA1_Channel2;
 /* USER CODE BEGIN PV */
 extern volatile uint8_t  cmd_buffer[3];
 extern volatile int      commandflag;
+<<<<<<< Updated upstream
 extern volatile bool     drdy_pulse;
 extern volatile bool     adc_data_ready;
 extern uint8_t           UartTxBuff[8];
@@ -43,6 +48,15 @@ extern volatile uint32_t dma_count;
 
 /* Private function prototypes -----------------------------------------------*/
 static void NonSecure_Init(void);
+=======
+extern volatile bool     adc_data_ready;
+extern volatile bool     adcready;
+
+/* USER CODE END PV */
+
+/* Private function prototypes -----------------------------------------------*/
+//static void NonSecure_Init(void);
+>>>>>>> Stashed changes
 static void SystemIsolation_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_GPDMA1_Init(void);
@@ -51,12 +65,16 @@ static void MX_USART1_UART_Init(void);
 
 /* USER CODE BEGIN PFP */
 
+<<<<<<< Updated upstream
 static inline float adc_to_float(uint8_t msb, uint8_t mid, uint8_t lsb)
 {
     int32_t raw = ((int32_t)msb << 16) | ((int32_t)mid << 8) | (int32_t)lsb;
     if (raw & 0x00800000) raw |= 0xFF000000;
     return (float)raw * ADC_STEP;
 }
+=======
+
+>>>>>>> Stashed changes
 
 /* USER CODE END PFP */
 
@@ -80,6 +98,7 @@ int main(void)
     /* USER CODE BEGIN WHILE */
     while (1)
     {
+<<<<<<< Updated upstream
         if (FFT_IsReady())
         {
             FFT_Process();
@@ -87,6 +106,16 @@ int main(void)
             while (!FFT_TransmitDone()) { __NOP(); }
             FFT_Reset();
         }
+=======
+    	if (FFT_IsReady())
+		{
+			FFT_Process();
+			FFT_Transmit();
+			while (!FFT_TransmitDone()) { __NOP(); }
+			FFT_Reset();
+		}
+
+>>>>>>> Stashed changes
         if (commandflag)
         {
             __disable_irq();
@@ -131,6 +160,129 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
     }
 }
 
+<<<<<<< Updated upstream
+=======
+// ADD before ADS_Init() in main()
+void Test_CS_Toggle(void) {
+    char buf[50];
+    HAL_UART_Transmit(&huart1, (uint8_t*)"CS TEST START\r\n", 15, HAL_MAX_DELAY);
+
+    // Read initial state
+    GPIO_PinState state_before = HAL_GPIO_ReadPin(ADC_SPI_CS1_GPIO_Port, ADC_SPI_CS1_Pin);
+    sprintf(buf, "CS initial state: %d (should be 1=HIGH)\r\n", state_before);
+    HAL_UART_Transmit(&huart1, (uint8_t*)buf, strlen(buf), HAL_MAX_DELAY);
+
+    // Force HIGH
+    HAL_GPIO_WritePin(ADC_SPI_CS1_GPIO_Port, ADC_SPI_CS1_Pin, GPIO_PIN_SET);
+    HAL_Delay(100);
+    GPIO_PinState state_high = HAL_GPIO_ReadPin(ADC_SPI_CS1_GPIO_Port, ADC_SPI_CS1_Pin);
+    sprintf(buf, "CS after SET HIGH: %d (should be 1)\r\n", state_high);
+    HAL_UART_Transmit(&huart1, (uint8_t*)buf, strlen(buf), HAL_MAX_DELAY);
+
+    // Force LOW
+    HAL_GPIO_WritePin(ADC_SPI_CS1_GPIO_Port, ADC_SPI_CS1_Pin, GPIO_PIN_RESET);
+    HAL_Delay(100);
+    GPIO_PinState state_low = HAL_GPIO_ReadPin(ADC_SPI_CS1_GPIO_Port, ADC_SPI_CS1_Pin);
+    sprintf(buf, "CS after SET LOW: %d (should be 0)\r\n", state_low);
+    HAL_UART_Transmit(&huart1, (uint8_t*)buf, strlen(buf), HAL_MAX_DELAY);
+
+    // Toggle 5 times and read back
+    HAL_UART_Transmit(&huart1, (uint8_t*)"Toggling CS 5x:\r\n", 17, HAL_MAX_DELAY);
+    for (int i = 0; i < 5; i++) {
+        HAL_GPIO_WritePin(ADC_SPI_CS1_GPIO_Port, ADC_SPI_CS1_Pin, GPIO_PIN_SET);
+        HAL_Delay(50);
+        GPIO_PinState s1 = HAL_GPIO_ReadPin(ADC_SPI_CS1_GPIO_Port, ADC_SPI_CS1_Pin);
+
+        HAL_GPIO_WritePin(ADC_SPI_CS1_GPIO_Port, ADC_SPI_CS1_Pin, GPIO_PIN_RESET);
+        HAL_Delay(50);
+        GPIO_PinState s0 = HAL_GPIO_ReadPin(ADC_SPI_CS1_GPIO_Port, ADC_SPI_CS1_Pin);
+
+        sprintf(buf, "  Toggle %d: HIGH=%d LOW=%d\r\n", i+1, s1, s0);
+        HAL_UART_Transmit(&huart1, (uint8_t*)buf, strlen(buf), HAL_MAX_DELAY);
+    }
+
+    // Leave CS HIGH when done
+    HAL_GPIO_WritePin(ADC_SPI_CS1_GPIO_Port, ADC_SPI_CS1_Pin, GPIO_PIN_SET);
+    HAL_UART_Transmit(&huart1, (uint8_t*)"CS TEST DONE\r\n", 14, HAL_MAX_DELAY);
+}
+void Test_MISO(void) {
+    char buf[60];
+    HAL_UART_Transmit(&huart1, (uint8_t*)"MISO TEST START\r\n", 17, HAL_MAX_DELAY);
+
+    // Step 1 - reconfigure PH8 temporarily as plain input to read it directly
+    GPIO_InitTypeDef GPIO_InitStruct = {0};
+    GPIO_InitStruct.Pin = GPIO_PIN_8;
+    GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+    GPIO_InitStruct.Pull = GPIO_PULLDOWN;  // pull down so we can see if it floats
+    HAL_GPIO_Init(GPIOH, &GPIO_InitStruct);
+
+    HAL_Delay(10);
+    GPIO_PinState miso_pulldown = HAL_GPIO_ReadPin(GPIOH, GPIO_PIN_8);
+    sprintf(buf, "MISO with PULLDOWN: %d (expect 0 if line free)\r\n", miso_pulldown);
+    HAL_UART_Transmit(&huart1, (uint8_t*)buf, strlen(buf), HAL_MAX_DELAY);
+
+    // Step 2 - pullup
+    GPIO_InitStruct.Pull = GPIO_PULLUP;
+    HAL_GPIO_Init(GPIOH, &GPIO_InitStruct);
+
+    HAL_Delay(10);
+    GPIO_PinState miso_pullup = HAL_GPIO_ReadPin(GPIOH, GPIO_PIN_8);
+    sprintf(buf, "MISO with PULLUP: %d (expect 1 if line free)\r\n", miso_pullup);
+    HAL_UART_Transmit(&huart1, (uint8_t*)buf, strlen(buf), HAL_MAX_DELAY);
+
+    // Step 3 - read MISO 20 times with CS low (ADC should drive MISO)
+    // restore AF mode first
+    GPIO_InitStruct.Pin = GPIO_PIN_8;
+    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+    GPIO_InitStruct.Alternate = GPIO_AF5_SPI5;
+    HAL_GPIO_Init(GPIOH, &GPIO_InitStruct);
+
+    // Step 4 - do a raw SPI transfer with CS manually controlled
+    // and read back every byte
+    HAL_UART_Transmit(&huart1, (uint8_t*)"Raw SPI 18 bytes:\r\n", 19, HAL_MAX_DELAY);
+
+    uint8_t tx[18] = {0};
+    uint8_t rx[18] = {0};
+
+    // CS low
+    HAL_GPIO_WritePin(ADC_SPI_CS1_GPIO_Port, ADC_SPI_CS1_Pin, GPIO_PIN_RESET);
+    HAL_Delay(1);
+
+    HAL_StatusTypeDef status = HAL_SPI_TransmitReceive(&hspi5, tx, rx, 18, 100);
+
+    // CS high
+    HAL_GPIO_WritePin(ADC_SPI_CS1_GPIO_Port, ADC_SPI_CS1_Pin, GPIO_PIN_SET);
+
+    sprintf(buf, "SPI status: %d (0=OK 1=ERR 2=BUSY 3=TIMEOUT)\r\n", status);
+    HAL_UART_Transmit(&huart1, (uint8_t*)buf, strlen(buf), HAL_MAX_DELAY);
+
+    // print all 18 bytes
+    char line[80] = "RX: ";
+    for (int i = 0; i < 18; i++) {
+        char byte[6];
+        sprintf(byte, "%02X ", rx[i]);
+        strcat(line, byte);
+    }
+    strcat(line, "\r\n");
+    HAL_UART_Transmit(&huart1, (uint8_t*)line, strlen(line), HAL_MAX_DELAY);
+
+    // Step 5 - check if all bytes identical (stuck line)
+    bool all_same = true;
+    for (int i = 1; i < 18; i++) {
+        if (rx[i] != rx[0]) { all_same = false; break; }
+    }
+    if (all_same) {
+        sprintf(buf, "WARNING: all bytes = 0x%02X - MISO may be stuck!\r\n", rx[0]);
+    } else {
+        sprintf(buf, "Bytes vary - MISO is responding\r\n");
+    }
+    HAL_UART_Transmit(&huart1, (uint8_t*)buf, strlen(buf), HAL_MAX_DELAY);
+
+    HAL_UART_Transmit(&huart1, (uint8_t*)"MISO TEST DONE\r\n", 16, HAL_MAX_DELAY);
+}
+>>>>>>> Stashed changes
 /* USER CODE END 4 */
 
 static void MX_GPDMA1_Init(void)
