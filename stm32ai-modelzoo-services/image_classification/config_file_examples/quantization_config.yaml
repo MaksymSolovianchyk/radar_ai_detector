@@ -1,19 +1,20 @@
 model:
-   model_path: ../../stm32ai-modelzoo-services/image_classification/tf/src/experiments_outputs/2026_02_26_11_47_42/saved_models/best_model.keras
+   model_path: /Users/maksym.solovianchyk/Documents/Graduation_Internship/radar_ai_detector/stm32ai-modelzoo-services/image_classification/tf/src/experiments_outputs/2026_03_30_15_47_20/saved_models/best_model.keras 
 operation_mode: quantization
 
 dataset:
   dataset_name: custom_dataset
-  quantization_path: /Users/maksym.solovianchyk/Downloads/vehicle-10
+  class_names: [hand_wave, idle]
+  quantization_path: /Users/maksym.solovianchyk/Documents/Graduation_Internship/radar_ai_detector/Recorded_data/tf_dataset
 
 preprocessing:
    rescaling:
-      scale: 1/127.5
-      offset: -1
+      scale: 1/255
+      offset: 0
    resizing:
       aspect_ratio: fit
       interpolation: nearest
-   color_mode: rgb
+   color_mode: grayscale
 
 quantization:
    quantizer: TFlite_converter
