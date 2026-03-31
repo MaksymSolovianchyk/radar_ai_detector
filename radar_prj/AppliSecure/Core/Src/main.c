@@ -9,7 +9,7 @@
 #include <string.h>
 #include "radar.h"
 #include "ads131m0x.h"
-#include "fft.h"
+//#include "fft.h"
 /* USER CODE END Includes */
 
 /* Private defines -----------------------------------------------------------*/
@@ -18,12 +18,7 @@
 #define VTOR_TABLE_NS_START_ADDR (SRAM2_AXI_BASE_NS | VECT_TAB_NS_OFFSET)
 #define ADC_RESET_Pin            GPIO_PIN_3
 #define ADC_RESET_GPIO_Port      GPIOB
-<<<<<<< Updated upstream
-#define ADC_FSR  0.15f
-#define ADC_STEP (ADC_FSR / 8388608.0f)
-=======
 
->>>>>>> Stashed changes
 /* USER CODE END PD */
 
 /* Private variables ---------------------------------------------------------*/
@@ -37,18 +32,6 @@ DMA_HandleTypeDef  handle_GPDMA1_Channel2;
 /* USER CODE BEGIN PV */
 extern volatile uint8_t  cmd_buffer[3];
 extern volatile int      commandflag;
-<<<<<<< Updated upstream
-extern volatile bool     drdy_pulse;
-extern volatile bool     adc_data_ready;
-extern uint8_t           UartTxBuff[8];
-extern volatile bool     adcready;
-extern volatile uint32_t drdy_count;
-extern volatile uint32_t dma_count;
-/* USER CODE END PV */
-
-/* Private function prototypes -----------------------------------------------*/
-static void NonSecure_Init(void);
-=======
 extern volatile bool     adc_data_ready;
 extern volatile bool     adcready;
 
@@ -56,7 +39,6 @@ extern volatile bool     adcready;
 
 /* Private function prototypes -----------------------------------------------*/
 //static void NonSecure_Init(void);
->>>>>>> Stashed changes
 static void SystemIsolation_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_GPDMA1_Init(void);
@@ -65,16 +47,7 @@ static void MX_USART1_UART_Init(void);
 
 /* USER CODE BEGIN PFP */
 
-<<<<<<< Updated upstream
-static inline float adc_to_float(uint8_t msb, uint8_t mid, uint8_t lsb)
-{
-    int32_t raw = ((int32_t)msb << 16) | ((int32_t)mid << 8) | (int32_t)lsb;
-    if (raw & 0x00800000) raw |= 0xFF000000;
-    return (float)raw * ADC_STEP;
-}
-=======
 
->>>>>>> Stashed changes
 
 /* USER CODE END PFP */
 
@@ -98,15 +71,6 @@ int main(void)
     /* USER CODE BEGIN WHILE */
     while (1)
     {
-<<<<<<< Updated upstream
-        if (FFT_IsReady())
-        {
-            FFT_Process();
-            FFT_Transmit();
-            while (!FFT_TransmitDone()) { __NOP(); }
-            FFT_Reset();
-        }
-=======
     	if (FFT_IsReady())
 		{
 			FFT_Process();
@@ -115,7 +79,6 @@ int main(void)
 			FFT_Reset();
 		}
 
->>>>>>> Stashed changes
         if (commandflag)
         {
             __disable_irq();
@@ -160,8 +123,6 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
     }
 }
 
-<<<<<<< Updated upstream
-=======
 // ADD before ADS_Init() in main()
 void Test_CS_Toggle(void) {
     char buf[50];
@@ -282,7 +243,6 @@ void Test_MISO(void) {
 
     HAL_UART_Transmit(&huart1, (uint8_t*)"MISO TEST DONE\r\n", 16, HAL_MAX_DELAY);
 }
->>>>>>> Stashed changes
 /* USER CODE END 4 */
 
 static void MX_GPDMA1_Init(void)
