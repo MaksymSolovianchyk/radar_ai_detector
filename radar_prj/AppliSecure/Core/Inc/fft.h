@@ -8,7 +8,7 @@ extern "C" {
 #include <stdint.h>
 #include <stdbool.h>
 
-#define FFT_N           256u//change for desired number of samples
+#define FFT_N           256u//change for desired number of samples 1024u for fft_script.py
 #define FFT_FS          3904u
 #define FFT_SYNC_WORD   0xAA55u
 #define FFT_PACKET_BYTES  (2u + 2u + (FFT_N * 4u) + 1u)
