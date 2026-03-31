@@ -23,7 +23,7 @@
 </details>
 
 ---
-This tutorial provides a simplified and validated overview of the workflow, which can also be found in the [README_TRAINING.md](/stm32ai-modelzoo-services/image_classification/docs/README_TRAINIG.md). All console commands are applicable for other stm32ai projects, do not forget to change YAML file.
+This tutorial provides a simplified and validated overview of the workflow, which can also be found in the [README_TRAINING.md](/stm32ai-modelzoo-services/image_classification/docs/README_TRAINING.md). All console commands are applicable for other stm32ai projects, do not forget to change YAML file.
 ```
 stm32ai-modelzoo-services/
   image_classification/
