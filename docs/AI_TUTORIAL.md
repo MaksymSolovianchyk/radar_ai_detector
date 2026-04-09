@@ -33,6 +33,7 @@ stm32ai-modelzoo-services/
 ## Deployment Tutorial
 <a id="deployment-tutorial"></a>
 ### To compile the image_classification project
+Can be used as first step if you want to compile standard code from STM or as last one if using custom model!
 1.	Software requirements:
 <a id="software-requirements"></a>
 The following software tools are required:
@@ -132,21 +133,15 @@ stm-model-zoo-services -> application_code -> image_classification -> STM32N6
 ## TRAINING TUTORIAL
 <a id="training-tutorial"></a>
 ### 🗂Dataset Structure
-cYour dataset must follow this structure:
+Your dataset must follow this structure:
 ```
 vehicle-10/
-boat/
-        img1.jpg
-        img2.jpg
-    bicycle/
-    helicopter/
-    truck/
-    minibus/
-    train/
-    car/
-    bus/
-    motorcycle/
-    taxi/
+	dimonds/
+		img1.jpg
+		img2.jpg
+	sapdes/
+	hearts/
+	clubs/
 ```
 
 All lables that are mentined in the dataset should be represented in .txt file in directory:
@@ -165,28 +160,29 @@ stm32ai-modelzoo-services/
     config_file_examples/
       training_config.yaml
 ```
-Here is example configuration to train it with vehicle-10 dataset installed from the internet
-
+Here is example configuration to train it with playing cards dataset installed from the internet
+Model -> all available models to be selected are in [models](/stm32ai-modelzoo-services/image_classification/tf/src/models) folder. One of the availble options is custom_model.
+input_shape -> requires size of input image and color mode like 3 - rgb, 1 - greyscale (be careful to keep the same data during all configuration files, unless your project will not work without any errors during compiling. Even order in class_names could lead to unexpected behaviour). 
 ```yaml
 general:
-  project_name: training_test
+  project_name: cards_test
   logs_dir: logs
   saved_models_dir: saved_models
   display_figures: True
   global_seed: 127
-  gpu_memory_limit: 3 #adjust according to available memory on PC
+  gpu_memory_limit: 3
 
 operation_mode: training
 
 model:
-   model_name: mobilenetv2_a035 #select here desired model from atm32ai-modelzoo availabe models list
+   model_name: mobilenetv2_a035
    input_shape: (224, 224, 3)
    pretrained: True
 
 dataset:
    dataset_name: custom_dataset
-   class_names: [bicycle, car] #all lables from labels_name.txt
-   training_path: /Users/maksym.solovianchyk/Downloads/vehicle-10
+   class_names: [clubs, diamonds, hearts, spades]
+   training_path: /Users/maksym.solovianchyk/Downloads/archive/cards
    validation_path:
    validation_split: 0.15
    test_path:
@@ -218,7 +214,7 @@ data_augmentation:
 
 training:
    batch_size: 64
-   epochs: 200 #can be adjusted depending on desired accuracy
+   epochs: 200 #200
    dropout: 0.3
    optimizer:
       Adam:
@@ -230,17 +226,20 @@ training:
          patience: 10
       EarlyStopping:
          monitor: val_accuracy
-         patience: 30 
+         patience: 30 #40
 
 mlflow:
    uri: ./tf/src/experiments_outputs/mlruns
 
 hydra:
    run:
-      dir: ./tf/src/experiments_outputs/${now:%Y_%m_%d_%H_%M_%S} 
+      dir: ./tf/src/experiments_outputs/${now:%Y_%m_%d_%H_%M_%S}
 ```
 ### 📁 Training Output
 <a id="training-output"></a>
+After training finished, you will get two graphs with information about its quality and accuracy. Confusion matrix and Loss and Accuracy
+![Confusion Matrix](/docs/img/confusion_matrix.png)
+![Accuracy and Loss](/docs/img/accuracy_loss.png)
 ```
 tf/src/experiments_outputs/YYYY_MM_DD_HH_MM_SS/
 ```
@@ -273,28 +272,28 @@ More detailed information is provided in [README_QUANTIZATION.md](/stm32ai-model
 Example content of YAML configuration file 
 ```yaml
 model:
-   model_path: /Users/maksym.solovianchyk/Documents/Graduation_Internship/radar_ai_detector/stm32ai-modelzoo-services/image_classification/tf/src/experiments_outputs/2026_03_30_15_47_20/saved_models/best_model.keras 
+   model_path: /Users/maksym.solovianchyk/Documents/Graduation_Internship/radar_ai_detector/stm32ai-modelzoo-services/image_classification/tf/src/experiments_outputs/2026_04_08_14_56_03/saved_models/best_model.keras 
 operation_mode: quantization
 
 dataset:
-  dataset_name: custom_dataset #do not change if using custom dataset
-  class_names: [hand_wave, idle] #adjust according to your classes
-  quantization_path: /Users/maksym.solovianchyk/Documents/Graduation_Internship/radar_ai_detector/Recorded_data/tf_dataset
+  dataset_name: custom_dataset
+  class_names: [clubs, diamonds, hearts, spades]
+  quantization_path: /Users/maksym.solovianchyk/Downloads/archive/cards
 
 preprocessing:
    rescaling:
-      scale: 1/255 #change according to model specifications
-      offset: 0 #change according to model specifications
+      scale: 1/127.5
+      offset: 0
    resizing:
       aspect_ratio: fit
       interpolation: nearest
-   color_mode: grayscale #change according to model specifications
+   color_mode: rgb
 
 quantization:
    quantizer: TFlite_converter
    quantization_type: PTQ
    quantization_input_type: uint8
-   quantization_output_type: int8 #change according to model specifications
+   quantization_output_type: int8
    export_dir: quantized_models
 
 mlflow:
@@ -303,8 +302,30 @@ mlflow:
 hydra:
    run:
       dir: ./tf/src/experiments_outputs/${now:%Y_%m_%d_%H_%M_%S}
-
 ```
+Run Quantization
+To launch your model quantization using a real dataset, run the following command from the UC folder:
+
+```bash
+python stm32ai_main.py --config-path ./config_file_examples/ --config-name quantization_config.yaml
+```
+The quantized TensorFlow Lite model can be found in the corresponding **experiments_outputs/** folder.
+
+
+
+In case you want to evaluate the accuracy of the quantized model, you can either launch the evaluation operation mode on the generated quantized model (please refer to the evaluation **[readme](./README_EVALUATION.md)** that describes in detail how to proceed) or you can use chained services like launching the [chain_eqe](../config_file_examples/chain_eqe_config.yaml) example with the command below:
+
+```bash
+python stm32ai_main.py --config-path ./config_file_examples/ --config-name chain_eqe_config.yaml
+```
+
+In case you want to evaluate your quantized model footprints, you can either launch the benchmark operation mode on the generated quantized model (please refer to the benchmarking **[readme](./README_BENCHMARKING.md)** that describes in detail how to proceed) or you can use chained services like launching the [chain_qb](../config_file_examples/chain_qb_config.yaml) example with the command below:
+
+```bash
+python stm32ai_main.py --config-path ./config_file_examples/ --config-name chain_qb_config.yaml
+```
+Chained services work whether you specify a quantization dataset or not (random quantization).
+
 ## ⚙ Troubleshooting
 <a id="troubleshooting"></a>
 During quantization or training, many problems may occur due to incorrect settings, that are not supported by pre-trained model. To check requirements go to [image_classification repository](/stm32ai-modelzoo/image_classification). 
