@@ -328,5 +328,29 @@ Chained services work whether you specify a quantization dataset or not (random 
 
 ## ⚙ Troubleshooting
 <a id="troubleshooting"></a>
-During quantization or training, many problems may occur due to incorrect settings, that are not supported by pre-trained model. To check requirements go to [image_classification repository](/stm32ai-modelzoo/image_classification). 
+1. During quantization or training, many problems may occur due to incorrect settings, that are not supported by pre-trained model. To check requirements go to [image_classification repository](/stm32ai-modelzoo/image_classification). 
 Solution: generate a custom model by using a [custom model py](/stm32ai-modelzoo-services/image_classification/tf/src/models/custom_model.py). Here you apply all customized settings and then use it in the training configuration file.
+2. If the display does not turn on, even though all steps were followed correctly, it is recommended to power cycle the board. This can be done by disconnecting and reconnecting the power supply. After restarting, the display should initialize properly.
+3. If the deployment script fails, check in the terminal if the CLI tools and STM32CubeMX are installed and available. After verifying this, run the required commands and try running the script again.
+If the deployment script fails, the issue is often related to missing or incorrectly configured command-line tools. The following steps can be used to diagnose and resolve the problem.
+
+3.1. Check ARM GCC Toolchain
+Verify that the correct ARM compiler is available:
+```
+which -a arm-none-eabi-gcc
+arm-none-eabi-gcc --version
+```
+If the wrong version is used (e.g., Homebrew), set the correct STM32CubeIDE toolchain path:
+```
+export PATH="/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.macos64_1.0.100.202509120712/tools/bin:$PATH"
+```
+
+3.2. Check STM32CubeProgrammer CLI
+Verify if the programmer tool is available:
+```
+which STM32_Programmer_CLI
+```
+Then add it to the system PATH:
+```
+export PATH="/Applications/STMicroelectronics/STM32Cube/STM32CubeProgrammer/STM32CubeProgrammer.app/Contents/MacOs/bin:$PATH"
+```
