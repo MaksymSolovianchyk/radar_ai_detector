@@ -262,6 +262,9 @@ Save file and move to the terminal.
 cd path_to_stm32ai_modelzoo_services
 source st_zoo311/bin/activate #activate virtual environment depending on system requirements
 cd image_classification
+```
+To run training.yaml
+```
 python stm32ai_main.py --config-path ./config_file_examples/ --config-name training_config.yaml
 ```
 After some time your model will be trained and saved into ./tf/src/experiments_outputs/ directory with all logs and visualized training results and matrixes
