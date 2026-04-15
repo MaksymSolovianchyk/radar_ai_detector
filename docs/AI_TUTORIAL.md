@@ -235,6 +235,12 @@ hydra:
    run:
       dir: ./tf/src/experiments_outputs/${now:%Y_%m_%d_%H_%M_%S}
 ```
+To run training.yaml
+```
+python stm32ai_main.py --config-path ./config_file_examples/ --config-name training_config.yaml
+```
+After some time your model will be trained and saved into ./tf/src/experiments_outputs/ directory with all logs and visualized training results and matrixes
+
 ### 📁 Training Output
 <a id="training-output"></a>
 After training finished, you will get two graphs with information about its quality and accuracy. Confusion matrix and Loss and Accuracy
@@ -263,11 +269,6 @@ cd path_to_stm32ai_modelzoo_services
 source st_zoo311/bin/activate #activate virtual environment depending on system requirements
 cd image_classification
 ```
-To run training.yaml
-```
-python stm32ai_main.py --config-path ./config_file_examples/ --config-name training_config.yaml
-```
-After some time your model will be trained and saved into ./tf/src/experiments_outputs/ directory with all logs and visualized training results and matrixes
 
 ## ⚙ Quantization Configuration (YAML)
 <a id="quantization-configuration-yaml"></a>
