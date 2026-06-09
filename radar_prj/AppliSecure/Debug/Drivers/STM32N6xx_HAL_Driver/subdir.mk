@@ -1,24 +1,24 @@
 ################################################################################
 # Automatically-generated file. Do not edit!
-# Toolchain: GNU Tools for STM32 (13.3.rel1)
+# Toolchain: GNU Tools for STM32 (14.3.rel1)
 ################################################################################
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-/Users/maksym.solovianchyk/Documents/radar_prj/radar_prj/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal.c \
-/Users/maksym.solovianchyk/Documents/radar_prj/radar_prj/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_cortex.c \
-/Users/maksym.solovianchyk/Documents/radar_prj/radar_prj/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_dma.c \
-/Users/maksym.solovianchyk/Documents/radar_prj/radar_prj/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_dma_ex.c \
-/Users/maksym.solovianchyk/Documents/radar_prj/radar_prj/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_exti.c \
-/Users/maksym.solovianchyk/Documents/radar_prj/radar_prj/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpio.c \
-/Users/maksym.solovianchyk/Documents/radar_prj/radar_prj/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_pwr.c \
-/Users/maksym.solovianchyk/Documents/radar_prj/radar_prj/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_pwr_ex.c \
-/Users/maksym.solovianchyk/Documents/radar_prj/radar_prj/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_rcc.c \
-/Users/maksym.solovianchyk/Documents/radar_prj/radar_prj/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_rcc_ex.c \
-/Users/maksym.solovianchyk/Documents/radar_prj/radar_prj/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_spi.c \
-/Users/maksym.solovianchyk/Documents/radar_prj/radar_prj/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_spi_ex.c \
-/Users/maksym.solovianchyk/Documents/radar_prj/radar_prj/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_uart.c \
-/Users/maksym.solovianchyk/Documents/radar_prj/radar_prj/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_uart_ex.c 
+/Users/maksym/Documents/graduation-internship/radar_ai_detector/radar_prj/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal.c \
+/Users/maksym/Documents/graduation-internship/radar_ai_detector/radar_prj/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_cortex.c \
+/Users/maksym/Documents/graduation-internship/radar_ai_detector/radar_prj/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_dma.c \
+/Users/maksym/Documents/graduation-internship/radar_ai_detector/radar_prj/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_dma_ex.c \
+/Users/maksym/Documents/graduation-internship/radar_ai_detector/radar_prj/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_exti.c \
+/Users/maksym/Documents/graduation-internship/radar_ai_detector/radar_prj/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpio.c \
+/Users/maksym/Documents/graduation-internship/radar_ai_detector/radar_prj/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_pwr.c \
+/Users/maksym/Documents/graduation-internship/radar_ai_detector/radar_prj/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_pwr_ex.c \
+/Users/maksym/Documents/graduation-internship/radar_ai_detector/radar_prj/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_rcc.c \
+/Users/maksym/Documents/graduation-internship/radar_ai_detector/radar_prj/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_rcc_ex.c \
+/Users/maksym/Documents/graduation-internship/radar_ai_detector/radar_prj/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_spi.c \
+/Users/maksym/Documents/graduation-internship/radar_ai_detector/radar_prj/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_spi_ex.c \
+/Users/maksym/Documents/graduation-internship/radar_ai_detector/radar_prj/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_uart.c \
+/Users/maksym/Documents/graduation-internship/radar_ai_detector/radar_prj/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_uart_ex.c 
 
 OBJS += \
 ./Drivers/STM32N6xx_HAL_Driver/stm32n6xx_hal.o \
@@ -54,33 +54,33 @@ C_DEPS += \
 
 
 # Each subdirectory must supply rules for building sources it contributes
-Drivers/STM32N6xx_HAL_Driver/stm32n6xx_hal.o: /Users/maksym.solovianchyk/Documents/radar_prj/radar_prj/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal.c Drivers/STM32N6xx_HAL_Driver/subdir.mk
+Drivers/STM32N6xx_HAL_Driver/stm32n6xx_hal.o: /Users/maksym/Documents/graduation-internship/radar_ai_detector/radar_prj/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal.c Drivers/STM32N6xx_HAL_Driver/subdir.mk
 	arm-none-eabi-gcc "$<" -mcpu=cortex-m55 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32N657xx -c -I../Core/Inc -I../../Secure_nsclib -I../../Drivers/STM32N6xx_HAL_Driver/Inc -I../../Drivers/CMSIS/Device/ST/STM32N6xx/Include -I../../Drivers/STM32N6xx_HAL_Driver/Inc/Legacy -I../../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -mcmse -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "$@"
-Drivers/STM32N6xx_HAL_Driver/stm32n6xx_hal_cortex.o: /Users/maksym.solovianchyk/Documents/radar_prj/radar_prj/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_cortex.c Drivers/STM32N6xx_HAL_Driver/subdir.mk
+Drivers/STM32N6xx_HAL_Driver/stm32n6xx_hal_cortex.o: /Users/maksym/Documents/graduation-internship/radar_ai_detector/radar_prj/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_cortex.c Drivers/STM32N6xx_HAL_Driver/subdir.mk
 	arm-none-eabi-gcc "$<" -mcpu=cortex-m55 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32N657xx -c -I../Core/Inc -I../../Secure_nsclib -I../../Drivers/STM32N6xx_HAL_Driver/Inc -I../../Drivers/CMSIS/Device/ST/STM32N6xx/Include -I../../Drivers/STM32N6xx_HAL_Driver/Inc/Legacy -I../../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -mcmse -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "$@"
-Drivers/STM32N6xx_HAL_Driver/stm32n6xx_hal_dma.o: /Users/maksym.solovianchyk/Documents/radar_prj/radar_prj/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_dma.c Drivers/STM32N6xx_HAL_Driver/subdir.mk
+Drivers/STM32N6xx_HAL_Driver/stm32n6xx_hal_dma.o: /Users/maksym/Documents/graduation-internship/radar_ai_detector/radar_prj/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_dma.c Drivers/STM32N6xx_HAL_Driver/subdir.mk
 	arm-none-eabi-gcc "$<" -mcpu=cortex-m55 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32N657xx -c -I../Core/Inc -I../../Secure_nsclib -I../../Drivers/STM32N6xx_HAL_Driver/Inc -I../../Drivers/CMSIS/Device/ST/STM32N6xx/Include -I../../Drivers/STM32N6xx_HAL_Driver/Inc/Legacy -I../../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -mcmse -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "$@"
-Drivers/STM32N6xx_HAL_Driver/stm32n6xx_hal_dma_ex.o: /Users/maksym.solovianchyk/Documents/radar_prj/radar_prj/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_dma_ex.c Drivers/STM32N6xx_HAL_Driver/subdir.mk
+Drivers/STM32N6xx_HAL_Driver/stm32n6xx_hal_dma_ex.o: /Users/maksym/Documents/graduation-internship/radar_ai_detector/radar_prj/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_dma_ex.c Drivers/STM32N6xx_HAL_Driver/subdir.mk
 	arm-none-eabi-gcc "$<" -mcpu=cortex-m55 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32N657xx -c -I../Core/Inc -I../../Secure_nsclib -I../../Drivers/STM32N6xx_HAL_Driver/Inc -I../../Drivers/CMSIS/Device/ST/STM32N6xx/Include -I../../Drivers/STM32N6xx_HAL_Driver/Inc/Legacy -I../../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -mcmse -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "$@"
-Drivers/STM32N6xx_HAL_Driver/stm32n6xx_hal_exti.o: /Users/maksym.solovianchyk/Documents/radar_prj/radar_prj/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_exti.c Drivers/STM32N6xx_HAL_Driver/subdir.mk
+Drivers/STM32N6xx_HAL_Driver/stm32n6xx_hal_exti.o: /Users/maksym/Documents/graduation-internship/radar_ai_detector/radar_prj/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_exti.c Drivers/STM32N6xx_HAL_Driver/subdir.mk
 	arm-none-eabi-gcc "$<" -mcpu=cortex-m55 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32N657xx -c -I../Core/Inc -I../../Secure_nsclib -I../../Drivers/STM32N6xx_HAL_Driver/Inc -I../../Drivers/CMSIS/Device/ST/STM32N6xx/Include -I../../Drivers/STM32N6xx_HAL_Driver/Inc/Legacy -I../../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -mcmse -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "$@"
-Drivers/STM32N6xx_HAL_Driver/stm32n6xx_hal_gpio.o: /Users/maksym.solovianchyk/Documents/radar_prj/radar_prj/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpio.c Drivers/STM32N6xx_HAL_Driver/subdir.mk
+Drivers/STM32N6xx_HAL_Driver/stm32n6xx_hal_gpio.o: /Users/maksym/Documents/graduation-internship/radar_ai_detector/radar_prj/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpio.c Drivers/STM32N6xx_HAL_Driver/subdir.mk
 	arm-none-eabi-gcc "$<" -mcpu=cortex-m55 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32N657xx -c -I../Core/Inc -I../../Secure_nsclib -I../../Drivers/STM32N6xx_HAL_Driver/Inc -I../../Drivers/CMSIS/Device/ST/STM32N6xx/Include -I../../Drivers/STM32N6xx_HAL_Driver/Inc/Legacy -I../../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -mcmse -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "$@"
-Drivers/STM32N6xx_HAL_Driver/stm32n6xx_hal_pwr.o: /Users/maksym.solovianchyk/Documents/radar_prj/radar_prj/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_pwr.c Drivers/STM32N6xx_HAL_Driver/subdir.mk
+Drivers/STM32N6xx_HAL_Driver/stm32n6xx_hal_pwr.o: /Users/maksym/Documents/graduation-internship/radar_ai_detector/radar_prj/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_pwr.c Drivers/STM32N6xx_HAL_Driver/subdir.mk
 	arm-none-eabi-gcc "$<" -mcpu=cortex-m55 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32N657xx -c -I../Core/Inc -I../../Secure_nsclib -I../../Drivers/STM32N6xx_HAL_Driver/Inc -I../../Drivers/CMSIS/Device/ST/STM32N6xx/Include -I../../Drivers/STM32N6xx_HAL_Driver/Inc/Legacy -I../../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -mcmse -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "$@"
-Drivers/STM32N6xx_HAL_Driver/stm32n6xx_hal_pwr_ex.o: /Users/maksym.solovianchyk/Documents/radar_prj/radar_prj/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_pwr_ex.c Drivers/STM32N6xx_HAL_Driver/subdir.mk
+Drivers/STM32N6xx_HAL_Driver/stm32n6xx_hal_pwr_ex.o: /Users/maksym/Documents/graduation-internship/radar_ai_detector/radar_prj/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_pwr_ex.c Drivers/STM32N6xx_HAL_Driver/subdir.mk
 	arm-none-eabi-gcc "$<" -mcpu=cortex-m55 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32N657xx -c -I../Core/Inc -I../../Secure_nsclib -I../../Drivers/STM32N6xx_HAL_Driver/Inc -I../../Drivers/CMSIS/Device/ST/STM32N6xx/Include -I../../Drivers/STM32N6xx_HAL_Driver/Inc/Legacy -I../../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -mcmse -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "$@"
-Drivers/STM32N6xx_HAL_Driver/stm32n6xx_hal_rcc.o: /Users/maksym.solovianchyk/Documents/radar_prj/radar_prj/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_rcc.c Drivers/STM32N6xx_HAL_Driver/subdir.mk
+Drivers/STM32N6xx_HAL_Driver/stm32n6xx_hal_rcc.o: /Users/maksym/Documents/graduation-internship/radar_ai_detector/radar_prj/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_rcc.c Drivers/STM32N6xx_HAL_Driver/subdir.mk
 	arm-none-eabi-gcc "$<" -mcpu=cortex-m55 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32N657xx -c -I../Core/Inc -I../../Secure_nsclib -I../../Drivers/STM32N6xx_HAL_Driver/Inc -I../../Drivers/CMSIS/Device/ST/STM32N6xx/Include -I../../Drivers/STM32N6xx_HAL_Driver/Inc/Legacy -I../../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -mcmse -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "$@"
-Drivers/STM32N6xx_HAL_Driver/stm32n6xx_hal_rcc_ex.o: /Users/maksym.solovianchyk/Documents/radar_prj/radar_prj/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_rcc_ex.c Drivers/STM32N6xx_HAL_Driver/subdir.mk
+Drivers/STM32N6xx_HAL_Driver/stm32n6xx_hal_rcc_ex.o: /Users/maksym/Documents/graduation-internship/radar_ai_detector/radar_prj/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_rcc_ex.c Drivers/STM32N6xx_HAL_Driver/subdir.mk
 	arm-none-eabi-gcc "$<" -mcpu=cortex-m55 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32N657xx -c -I../Core/Inc -I../../Secure_nsclib -I../../Drivers/STM32N6xx_HAL_Driver/Inc -I../../Drivers/CMSIS/Device/ST/STM32N6xx/Include -I../../Drivers/STM32N6xx_HAL_Driver/Inc/Legacy -I../../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -mcmse -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "$@"
-Drivers/STM32N6xx_HAL_Driver/stm32n6xx_hal_spi.o: /Users/maksym.solovianchyk/Documents/radar_prj/radar_prj/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_spi.c Drivers/STM32N6xx_HAL_Driver/subdir.mk
+Drivers/STM32N6xx_HAL_Driver/stm32n6xx_hal_spi.o: /Users/maksym/Documents/graduation-internship/radar_ai_detector/radar_prj/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_spi.c Drivers/STM32N6xx_HAL_Driver/subdir.mk
 	arm-none-eabi-gcc "$<" -mcpu=cortex-m55 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32N657xx -c -I../Core/Inc -I../../Secure_nsclib -I../../Drivers/STM32N6xx_HAL_Driver/Inc -I../../Drivers/CMSIS/Device/ST/STM32N6xx/Include -I../../Drivers/STM32N6xx_HAL_Driver/Inc/Legacy -I../../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -mcmse -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "$@"
-Drivers/STM32N6xx_HAL_Driver/stm32n6xx_hal_spi_ex.o: /Users/maksym.solovianchyk/Documents/radar_prj/radar_prj/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_spi_ex.c Drivers/STM32N6xx_HAL_Driver/subdir.mk
+Drivers/STM32N6xx_HAL_Driver/stm32n6xx_hal_spi_ex.o: /Users/maksym/Documents/graduation-internship/radar_ai_detector/radar_prj/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_spi_ex.c Drivers/STM32N6xx_HAL_Driver/subdir.mk
 	arm-none-eabi-gcc "$<" -mcpu=cortex-m55 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32N657xx -c -I../Core/Inc -I../../Secure_nsclib -I../../Drivers/STM32N6xx_HAL_Driver/Inc -I../../Drivers/CMSIS/Device/ST/STM32N6xx/Include -I../../Drivers/STM32N6xx_HAL_Driver/Inc/Legacy -I../../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -mcmse -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "$@"
-Drivers/STM32N6xx_HAL_Driver/stm32n6xx_hal_uart.o: /Users/maksym.solovianchyk/Documents/radar_prj/radar_prj/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_uart.c Drivers/STM32N6xx_HAL_Driver/subdir.mk
+Drivers/STM32N6xx_HAL_Driver/stm32n6xx_hal_uart.o: /Users/maksym/Documents/graduation-internship/radar_ai_detector/radar_prj/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_uart.c Drivers/STM32N6xx_HAL_Driver/subdir.mk
 	arm-none-eabi-gcc "$<" -mcpu=cortex-m55 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32N657xx -c -I../Core/Inc -I../../Secure_nsclib -I../../Drivers/STM32N6xx_HAL_Driver/Inc -I../../Drivers/CMSIS/Device/ST/STM32N6xx/Include -I../../Drivers/STM32N6xx_HAL_Driver/Inc/Legacy -I../../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -mcmse -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "$@"
-Drivers/STM32N6xx_HAL_Driver/stm32n6xx_hal_uart_ex.o: /Users/maksym.solovianchyk/Documents/radar_prj/radar_prj/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_uart_ex.c Drivers/STM32N6xx_HAL_Driver/subdir.mk
+Drivers/STM32N6xx_HAL_Driver/stm32n6xx_hal_uart_ex.o: /Users/maksym/Documents/graduation-internship/radar_ai_detector/radar_prj/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_uart_ex.c Drivers/STM32N6xx_HAL_Driver/subdir.mk
 	arm-none-eabi-gcc "$<" -mcpu=cortex-m55 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32N657xx -c -I../Core/Inc -I../../Secure_nsclib -I../../Drivers/STM32N6xx_HAL_Driver/Inc -I../../Drivers/CMSIS/Device/ST/STM32N6xx/Include -I../../Drivers/STM32N6xx_HAL_Driver/Inc/Legacy -I../../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -mcmse -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "$@"
 
 clean: clean-Drivers-2f-STM32N6xx_HAL_Driver

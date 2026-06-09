@@ -1,6 +1,6 @@
 ################################################################################
 # Automatically-generated file. Do not edit!
-# Toolchain: GNU Tools for STM32 (13.3.rel1)
+# Toolchain: GNU Tools for STM32 (14.3.rel1)
 ################################################################################
 
 -include ../makefile.init
@@ -63,8 +63,8 @@ all: main-build
 main-build: radar_prj_AppliSecure.elf secondary-outputs
 
 # Tool invocations
-radar_prj_AppliSecure.elf radar_prj_AppliSecure.map: $(OBJS) $(USER_OBJS) /Users/maksym.solovianchyk/Documents/radar_prj/radar_prj/AppliSecure/STM32N657X0HXQ_LRUN.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "radar_prj_AppliSecure.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m55 -T"/Users/maksym.solovianchyk/Documents/radar_prj/radar_prj/AppliSecure/STM32N657X0HXQ_LRUN.ld" --specs=nosys.specs -Wl,-Map="radar_prj_AppliSecure.map" -Wl,--gc-sections -static -Wl,--cmse-implib -Wl,--out-implib=./secure_nsclib.o -L"/Users/maksym.solovianchyk/Documents/radar_prj/radar_prj/AppliSecure/Lib" -u _printf_float --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+radar_prj_AppliSecure.elf radar_prj_AppliSecure.map: $(OBJS) $(USER_OBJS) /Users/maksym/Documents/graduation-internship/radar_ai_detector/radar_prj/AppliSecure/STM32N657X0HXQ_LRUN.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "radar_prj_AppliSecure.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m55 -T"/Users/maksym/Documents/graduation-internship/radar_ai_detector/radar_prj/AppliSecure/STM32N657X0HXQ_LRUN.ld" --specs=nosys.specs -Wl,-Map="radar_prj_AppliSecure.map" -Wl,--gc-sections -static -Wl,--cmse-implib -Wl,--out-implib=./secure_nsclib.o -L"/Users/maksym/Documents/graduation-internship/radar_ai_detector/radar_prj/AppliSecure/Lib" -u _printf_float --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

@@ -243,6 +243,55 @@ void Test_MISO(void) {
 
     HAL_UART_Transmit(&huart1, (uint8_t*)"MISO TEST DONE\r\n", 16, HAL_MAX_DELAY);
 }
+void Test_MOSI(void)
+{
+    char buf[100];
+
+    HAL_UART_Transmit(&huart1, (uint8_t*)"MOSI TEST START\r\n", 17, HAL_MAX_DELAY);
+
+    uint8_t tx[] = {
+        0x00, 0xFF, 0xAA, 0x55,
+        0x12, 0x34, 0x56, 0x78,
+        0xDE, 0xAD, 0xBE, 0xEF
+    };
+
+    uint8_t rx[sizeof(tx)] = {0};
+
+    HAL_UART_Transmit(&huart1, (uint8_t*)"Sending MOSI pattern:\r\n", 23, HAL_MAX_DELAY);
+
+    char line[120] = "TX: ";
+    for (uint32_t i = 0; i < sizeof(tx); i++)
+    {
+        char byte[6];
+        sprintf(byte, "%02X ", tx[i]);
+        strcat(line, byte);
+    }
+    strcat(line, "\r\n");
+    HAL_UART_Transmit(&huart1, (uint8_t*)line, strlen(line), HAL_MAX_DELAY);
+
+    HAL_GPIO_WritePin(ADC_SPI_CS1_GPIO_Port, ADC_SPI_CS1_Pin, GPIO_PIN_RESET);
+    HAL_Delay(1);
+
+    HAL_StatusTypeDef status = HAL_SPI_TransmitReceive(&hspi5, tx, rx, sizeof(tx), 100);
+
+    HAL_Delay(1);
+    HAL_GPIO_WritePin(ADC_SPI_CS1_GPIO_Port, ADC_SPI_CS1_Pin, GPIO_PIN_SET);
+
+    sprintf(buf, "SPI status: %d (0=OK 1=ERR 2=BUSY 3=TIMEOUT)\r\n", status);
+    HAL_UART_Transmit(&huart1, (uint8_t*)buf, strlen(buf), HAL_MAX_DELAY);
+
+    strcpy(line, "RX: ");
+    for (uint32_t i = 0; i < sizeof(rx); i++)
+    {
+        char byte[6];
+        sprintf(byte, "%02X ", rx[i]);
+        strcat(line, byte);
+    }
+    strcat(line, "\r\n");
+    HAL_UART_Transmit(&huart1, (uint8_t*)line, strlen(line), HAL_MAX_DELAY);
+
+    HAL_UART_Transmit(&huart1, (uint8_t*)"MOSI TEST DONE\r\n", 16, HAL_MAX_DELAY);
+}
 /* USER CODE END 4 */
 
 static void MX_GPDMA1_Init(void)
